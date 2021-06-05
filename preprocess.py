@@ -27,6 +27,63 @@ def main():
 
 #main()
 
+def distance(x1, x2):
+	# x1 and x2 are each tuples
+
+	return np.sqrt((x1[0] - x2[0])**2 + (x1[1] - x2[1])**2)
+
+
+def bin_coords(position):
+
+	binned = []
+	bin_radius = 10
+
+
+	# naive binning, assumes input is alr sorted
+
+	for coord in zip(*position[::-1]):
+		#print(coord)
+		new_bin = False
+
+		if len(binned) == 0:
+			binned.append(coord)
+			continue
+
+		if all([distance(existing_coord, coord) > bin_radius for existing_coord in binned]):
+			binned.append(coord)
+
+	return binned
+
+
+
+def template():
+
+	img = cv2.imread('cells_4_noise_0.jpg', 0)
+	#img = img.astype('float64') * 255/np.max(img)
+
+	template = cv2.imread('template.jpg', 0)
+	#template = template.astype('float64') * 255/np.max(template)
+	width, height = template.shape[::-1]
+
+	match = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
+
+	threshold = 0.5 # just lower if needed lol
+
+	position = np.where(match >= threshold)
+
+	print(position)
+
+	binned = bin_coords(position)
+
+	for point in binned:
+		cv2.rectangle(img, point, (point[0] + width, point[1] + height), 255, 2)
+
+
+	# for point in zip(*position[::-1]): #draw the rectangle around the matched template
+ 	#	
+	cv2.imshow('Template Found', img)
+	cv2.waitKey(0)
+
 
 def count():
 
@@ -59,11 +116,6 @@ def count():
 	plt.imshow(data)
 	plt.show()
 
-
-	#print(data[data > 80])
-
-	
-
-count()
+template()
 
 	# define a 30x30 sliding window, 

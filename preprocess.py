@@ -1,3 +1,7 @@
+# template() as defined uses template.jpg (hardcoded) to template match with 
+# a jpg file (preprocessed, file path hardcoded) and shows the bounding boxes
+
+
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np

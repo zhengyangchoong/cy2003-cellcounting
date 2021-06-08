@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+</head>
+<body>
+<!--multiple is set to allow multiple files to be selected-->
+
+<input id="myfiles" multiple type="file">
+
+</body>
+
+<script>
+
+var pullfiles=function(){
+    // love the query selector
+    var fileInput = document.querySelector("#myfiles");
+    var files = fileInput.files;
+    // cache files.length
+    var fl = files.length;
+    var i = 0;
+
+    while ( i < fl) {
+        // localize file var in the loop
+        var file = files[i];
+        alert(file.name);
+        i++;
+    }
+}
+
+// set the input element onchange to call pullfiles
+document.querySelector("#myfiles").onchange=pullfiles;
+
+//a.t
+</script>
+
+</html>

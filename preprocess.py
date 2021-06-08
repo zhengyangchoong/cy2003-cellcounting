@@ -72,9 +72,9 @@ def preprocess(image_path, radius = 750, threshold = 55):
 
 	img_c[img_c < 55] = 0 # removes all the bright stuff in the original image
 
+	#img_c = cv2.normalize(img_c, None, 0, 1, norm_type = cv2.NORM_MINMAX, dtype = cv2.CV_32F)
+
 	return img_c
-
-
 
 
 
@@ -114,9 +114,14 @@ def template(input_file, template_file):
 	cv2.imshow('Matched boxes', img)
 	cv2.waitKey(0)
 
+def preprocess_in_folder(source_folder):
+	pass
+
+
 
 if __name__ == "__main__":
-	template('cells_4_noise_0.jpg', 'template.jpg')
+	#template('cells_4_noise_0.jpg', 'template.jpg')
+	test()
 
 
 """

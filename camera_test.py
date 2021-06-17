@@ -4,8 +4,12 @@ import argparse
 
 
 def capture():
-	command = "fswebcam -r 2560x1440 --jpeg 90 -D 4 --no-banner output.jpg"
 
-	process = subprocess.Popen(command.split(" "), stdout = output)
+	with open("log.txt") as f:
+		command = "fswebcam -r 2560x1440 --jpeg 90 -D 4 --no-banner output.jpg"
+
+		process = subprocess.Popen(command.split(" "), stdout = f)
+
+
 capture()
 

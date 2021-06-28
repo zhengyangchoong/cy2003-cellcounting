@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>I love CY2003!</title>
+ 	<script type="text/javascript"
+         src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!--Import materialize.css-->
+	<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}"  media="screen,projection"/>
+
+	<style>
+
+	body{
+		background-color: #2C3E50;get
+		line-height:  140%;
+	}
+	#main{
+		padding: 2em;
+		margin: 0 auto;
+		width: 60%;
+		background-color: #FAFAFA
+
+	}
+	</style>
+
+	<script>
+		console.log("hello")
+
+		$(function(){
+		$('#get_pos').on('click', function(e) {
+		e.preventDefault()
+		console.log("GET POSITION")
+		$.ajax({
+			url:'/get_position',
+			//data:{"test": "test"},
+			method : 'POST',
+			success: function(data){
+				console.log("ASFSFDFDS")
+				$("#x_pos").html(data['pos'][0])
+				$("#y_pos").html(data['pos'][1])
+				$("#z_pos").html(data['pos'][2])
+			}
+			})
+
+		})
+		})
+
+		$(function(){
+		$('#home').on('click', function(e) {
+		e.preventDefault()
+
+		$.ajax({
+			url:'/move_home',
+			//data:{"test": "test"},
+			method : 'POST',
+			success: function(data){
+				console.log("homed")
+				$("#x_pos").html(data['pos'][0])
+				$("#y_pos").html(data['pos'][1])
+				$("#z_pos").html(data['pos'][2])
+			}
+			})
+		})
+
+		})		
+
+
+
+	</script>
+
+</head>
+
+<body>
+	<div id = "main">
+	<h1>Designing a Cell Counting microscope</h1>
+
+	<h2>Movement Control</h2>
+
+	<button type = "button" id = "get_pos">Get Current Position</button>
+	<button type = "button" id = "home">Home motor</button>
+	<br/>
+	Current position:
+	<br />
+
+	x: <span id = "x_pos"> </span>
+	<br />
+	y: <span id = "y_pos"> </span>
+	<br />
+	z: <span id = "z_pos"> </span>
+	<br />
+	<hr />
+
+	<form action = "{{ url_for('move_abs') }}" method = "post">
+		x: 
+		<input type="text" id="set_x_pos" name="set_x_pos"><br />
+		y:
+		<input type="text" id="set_y_pos" name="set_y_pos"><br />
+		z:
+		<input type="text" id="set_z_pos" name="set_z_pos"><br />
+
+		<input type="submit">
+	</form>
+	
+
+
+	</div>
+	
+</body>
+</html>

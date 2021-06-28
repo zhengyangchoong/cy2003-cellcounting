@@ -120,8 +120,8 @@ def preprocess_in_folder(source_folder):
 
 
 if __name__ == "__main__":
-	#template('cells_4_noise_0.jpg', 'template.jpg')
-	test()
+	template('IMG_3173_preproc.jpg', 'template.jpg')
+	#test()
 
 
 """

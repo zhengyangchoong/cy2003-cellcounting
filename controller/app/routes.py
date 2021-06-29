@@ -1,18 +1,22 @@
 from app import app
 from flask import jsonify, render_template, request
 import time
+from app.printrun.printcore import printcore
+
+import os
+
+print(os.getcwd())
 
 
 class MicroscopeController():
 
 	def __init__(self):
-		pass
-		#self.p = printcore('/dev/ttyUSB0', 250000)
+		
+		self.p = printcore('/dev/ttyUSB1', 250000)
+		self.p.connect()
 
 		self.pos = {'x':0, 'y':0, 'z':0}
 
-
-		# does p.send not return anything? 
 
 	def acquire(self, n = 1):
 		"""
@@ -60,6 +64,13 @@ class MicroscopeController():
 
 		move_str = ""
 
+		if abs_x == "":
+			abs_x = 0
+		if abs_y == "":
+			abs_y = 0
+		if abs_z == "":
+			abs_z = 0
+		
 		abs_x = int(abs_x)
 		abs_y = int(abs_y)
 		abs_z = int(abs_z)
@@ -68,15 +79,15 @@ class MicroscopeController():
 			if 0 <= abs_x <= 150: # hard coded limits
 				move_str += f"X{abs_x}"
 		if abs_y:
-			if 0 <= abs_x <= 150: # hard coded limits
+			if 0 <= abs_y <= 150: # hard coded limits
 				move_str += f"Y{abs_y}"
 		if abs_z:
-			if 0 <= abs_x <= 50: # hard coded limits
+			if 0 <= abs_z <= 45: # hard coded limits
 				move_str += f"Z{abs_z}"
 
 		if not move_str == "":
-			pass
-			#self.p.send(f"G0 {move_str}")
+			print(move_str)
+			self.p.send(f"G0 {move_str}")
 
 
 	def acquire_and_move(self, n, distance):
@@ -87,11 +98,32 @@ class MicroscopeController():
 			# self.p.send()
 		
 	def get_pos(self):
-		#self.p.send("M114")
-		#_pos = self.p._readline()
-		#print(_pos)
+		self.p.send("M114")
 
-		return [1,2,3]
+		position = ""
+
+		for i in range(3):
+			test_str = self.p.printer.readline()
+			print(i, test_str)
+
+			if len(test_str) > 4:
+				position = test_str
+
+		position = str(position)
+
+		if position == "":
+			return [0,0,0]
+		try:
+
+			coords = (position.split(" "))
+			coords = [coords[0], coords[1], coords[2]]
+
+			coords = list(map(lambda x: float(x.split(":")[1]), coords))
+
+			print("@@@@", coords)
+			return coords
+		except:
+			return [0,0,0]
 
 
 		# return a string
@@ -104,7 +136,8 @@ class MicroscopeController():
 		pass
 
 	def home(self):
-		#self.p.send("G28")
+		self.p.send("G28")
+		time.sleep(5)
 		return 0
 @app.route('/')
 @app.route('/index')
@@ -128,13 +161,16 @@ def get_position():
 def move_abs():
 
 	controller.move(request.form['set_x_pos'], request.form['set_y_pos'], request.form['set_z_pos'])
+	time.sleep(5)
 
 	print(request.form['set_x_pos'])
 	print(request.form['set_y_pos'])
 	print(request.form['set_z_pos'])
 
-	
+
+	data = {"pos": controller.get_pos()}
 	data = jsonify(data)
+
 	return render_template('index.html', data = data)
 
 @app.route('/move_home', methods = ['POST'])

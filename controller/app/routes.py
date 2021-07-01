@@ -1,24 +1,40 @@
-from app import app
-from flask import jsonify, render_template, request
-import time
-from app.printrun.printcore import printcore
 
+import base64
+import time
+
+try:
+	from app.printrun.printcore import printcore
+except:
+	from printrun.printcore import printcore
+
+
+import datetime
+import subprocess
 import os
 
 print(os.getcwd())
 
-
 class MicroscopeController():
 
-	def __init__(self):
+	def __init__(self, port = "/dev/ttyUSB0", offline = False):
+
+		self.offline = offline
+		self.port = port
+
+		if not offline:
 		
-		self.p = printcore('/dev/ttyUSB1', 250000)
-		self.p.connect()
+			self.p = printcore(port, 250000)
+			self.p.connect()
 
 		self.pos = {'x':0, 'y':0, 'z':0}
 
 
-	def acquire(self, n = 1):
+	def disconnect(self):
+		self.disconnect()
+		return 0
+
+
+	def acquire(self, undistort = False):
 		"""
 		
 		
@@ -26,16 +42,27 @@ class MicroscopeController():
 		:type       n:    { type_description }
 		"""
 
-		DEFAULT_FOLDER = "raw"
-		PROCESSED_FOLDER = "capture"
+		DEFAULT_FOLDER = "app/static/raw"
+		PROCESSED_FOLDER = "app/static/capture"
 
-		for i in range(n):
+		if not os.path.exists(DEFAULT_FOLDER):
+			os.makedirs(DEFAULT_FOLDER)
 
-			file_id = datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d_%H%M%S")
+		if not os.path.exists(PROCESSED_FOLDER):
+			os.makedirs(PROCESSED_FOLDER)
 
-			command = "fswebcam -r 2560x1440 --jpeg 90 -D 2 -F 1 --no-banner --save raw/{}.jpg".format(file_id)
 
-			process = subprocess.Popen(command.split(" "), stdout = f)
+		file_id = datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d_%H%M%S")
+
+		_filename = os.path.join(DEFAULT_FOLDER, file_id + ".jpg")
+
+		command = f"fswebcam -r 2560x1440 --jpeg 90 -D 4 -F 1 --no-banner --save {_filename}"
+
+		process = subprocess.call(command.split(" "))
+
+		time.sleep(4)
+
+		if undistort:
 
 			mtx = np.load("intrinisic_matrix.npy")
 			dist = np.load("distortion_coeff.npy")
@@ -48,7 +75,11 @@ class MicroscopeController():
 			# crop the image
 			x, y, w, h = roi
 			dst = dst[y:y+h, x:x+w]
-			cv.imwrite('capture/{}.png'.format(file_id), dst)
+			_filename = 'capture/{}.png'.format(file_id)
+			cv.imwrite(_filename, dst)
+
+
+		return _filename
 
 
 	def move_rel(self, rel_x = 0, rel_y = 0, rel_z = 0):
@@ -77,58 +108,48 @@ class MicroscopeController():
 
 		if abs_x:
 			if 0 <= abs_x <= 150: # hard coded limits
-				move_str += f"X{abs_x}"
+				move_str += "X{:.2f}".format(abs_x)
 		if abs_y:
-			if 0 <= abs_y <= 150: # hard coded limits
-				move_str += f"Y{abs_y}"
+			if 0 <= abs_y <= 180: # hard coded limits
+				move_str += "Y{:.2f}".format(abs_y)
 		if abs_z:
 			if 0 <= abs_z <= 45: # hard coded limits
-				move_str += f"Z{abs_z}"
+				move_str += "Z{:.2f}".format(abs_z)
 
 		if not move_str == "":
 			print(move_str)
-			self.p.send(f"G0 {move_str}")
-
-
-	def acquire_and_move(self, n, distance):
-
-		current_position = "0"
-		for i in range(n):
-			pass
-			# self.p.send()
+			if not self.offline:
+				self.p.send(f"G0 {move_str}")
 		
 	def get_pos(self):
-		self.p.send("M114")
-
 		position = ""
+		if not self.offline:
+			self.p.send("M114")
 
-		for i in range(3):
-			test_str = self.p.printer.readline()
-			print(i, test_str)
+			for i in range(3):
+				test_str = self.p.printer.readline()
+				print(i, test_str)
 
-			if len(test_str) > 4:
-				position = test_str
+				if len(test_str) > 4:
+					position = test_str
 
-		position = str(position)
+			position = str(position)
 
-		if position == "":
-			return [0,0,0]
-		try:
+			if position == "":
+				return [0,0,0]
+			try:
 
-			coords = (position.split(" "))
-			coords = [coords[0], coords[1], coords[2]]
+				coords = (position.split(" "))
+				coords = [coords[0], coords[1], coords[2]]
 
-			coords = list(map(lambda x: float(x.split(":")[1]), coords))
+				coords = list(map(lambda x: float(x.split(":")[1]), coords))
 
-			print("@@@@", coords)
-			return coords
-		except:
-			return [0,0,0]
+				print("@@@@", coords)
+				return coords
+			except:
+				return [0,0,0]
 
-
-		# return a string
-
-		# update self.pos
+		return [0,0,0]
 
 	def get_status(self):
 		#print(self.rpc.status())
@@ -136,20 +157,43 @@ class MicroscopeController():
 		pass
 
 	def home(self):
-		self.p.send("G28")
-		time.sleep(5)
+
+		if not self.offline:
+			self.p.send("G28")
+			time.sleep(5)
 		return 0
+
+
+
+from app import app
+from flask import jsonify, render_template, request, send_file, make_response
 @app.route('/')
 @app.route('/index')
 def index():
 
 	global controller
-	controller = MicroscopeController()
+	controller = MicroscopeController('/dev/ttyUSB0')
 
 	return render_template('index.html')
 
 
-@app.route('/get_position', methods = ['POST'])
+@app.route('/get_image', methods = ['GET', 'POST'])
+def get_image():
+
+	fp = controller.acquire()
+
+	print(fp)
+
+	fp = "/".join(fp.split("/")[1:])
+
+	data = {"source": fp}
+	data = jsonify(data)
+
+	return data
+
+
+
+@app.route('/get_position', methods = ['GET', 'POST'])
 def get_position():
 	data = {"pos": controller.get_pos()}
 	data = jsonify(data)
@@ -173,20 +217,11 @@ def move_abs():
 
 	return render_template('index.html', data = data)
 
-@app.route('/move_home', methods = ['POST'])
+@app.route('/move_home', methods = ['GET', 'POST'])
 def move_home():
 	controller.home()
 
 	# keep querying
-
-	print(controller.get_pos())
-	time.sleep(1)
-	print(controller.get_pos())
-	time.sleep(1)
-	print(controller.get_pos())
-	time.sleep(1)
-	print(controller.get_pos())
-	time.sleep(1)
 
 	data = {"pos": controller.get_pos()}
 	data = jsonify(data)

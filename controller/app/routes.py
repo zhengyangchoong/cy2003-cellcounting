@@ -12,6 +12,9 @@ import datetime
 import subprocess
 import os
 
+import contour_detector
+
+
 print(os.getcwd())
 
 class MicroscopeController():
@@ -33,6 +36,14 @@ class MicroscopeController():
 			"move_axis": "x",
 			"move_direction":"+"
 		}
+
+		#warm up camera
+
+		command = f"fswebcam -r 1920x1080 --jpeg 90 -D 4 -F 2 --no-banner"
+
+		process = subprocess.call(command.split(" "))
+
+		time.sleep(4)
 
 
 	def disconnect(self):
@@ -62,11 +73,9 @@ class MicroscopeController():
 
 		_filename = os.path.join(DEFAULT_FOLDER, file_id + ".jpg")
 
-		command = f"fswebcam -r 2560x1440 --jpeg 90 -D 4 -F 1 --no-banner --save {_filename}"
+		command = f"fswebcam -r 1920x1080 --jpeg 90 -D 4 -F 1 --no-banner --save {_filename}"
 
 		process = subprocess.call(command.split(" "))
-
-		time.sleep(4)
 
 		if undistort:
 
@@ -87,6 +96,10 @@ class MicroscopeController():
 
 		return _filename
 
+	def count_cells(self,fp):
+		count, img = contour_detector.contourdetector(fp)
+
+		return (count, img)
 
 	def move_rel(self, distance):
 
@@ -218,7 +231,19 @@ def get_image():
 
 	return data
 
+@app.route('/capture_and_count', methods = ['GET', 'POST'])
+def capture_and_count():
 
+	fp = controller.acquire()
+
+	count, fp = controller.count_cells(fp)
+
+	fp = "/".join(fp.split("/")[1:])
+
+	data = {"source": fp, "count": count}
+	data = jsonify(data)
+
+	return data
 
 @app.route('/get_position', methods = ['GET', 'POST'])
 def get_position():
@@ -243,6 +268,7 @@ def move_abs():
 	data = jsonify(data)
 
 	return render_template('index.html', data = data)
+
 
 @app.route('/move_home', methods = ['GET', 'POST'])
 def move_home():

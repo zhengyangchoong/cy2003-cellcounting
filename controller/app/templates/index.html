@@ -89,6 +89,27 @@
 					console.log(data)
 					document.getElementById("test_image").src = data["source"];
 					document.getElementById("test_image").display = "block"
+					document.getElementById("test_image").width = 1080
+					document.getElementById("test_image").height = 608
+
+				}
+			})
+
+			})
+		})
+		$(function(){
+
+			$("#count").on('click', function(e){
+			e.preventDefault()
+			$.ajax({
+				url:'/capture_and_count',
+				method : 'POST',
+				success:function(data){
+					document.getElementById("test_image").src = data["source"];
+					document.getElementById("test_image").display = "block"
+					document.getElementById("count_show").html = data["count"]
+					document.getElementById("test_image").width = 600
+					document.getElementById("test_image").height = 600
 
 				}
 			})
@@ -279,6 +300,8 @@
 			})
 
 		})
+
+
 	</script>
 
 </head>
@@ -292,6 +315,7 @@
 	<button type = "button" id = "get_pos">Get Current Position</button>
 	<button type = "button" id = "home">Home motor</button>
 	<button type = "button" id = "image">Send image</button>
+	<button type = "button" id = "count">Take picture and count</button>
 	<br/>
 
 
@@ -317,8 +341,9 @@
 
 
 	<br />
-
-
+	Counts:
+	<span id ="count_show"></span>
+	<br />
 	Current position:
 	<br />
 
@@ -338,11 +363,12 @@
 		z:
 		<input type="text" id="set_z_pos" name="set_z_pos"><br />
 
-		<input type="submit">
+		<input type="submit" value = "Move to position!">
 	</form>
-	
+	<br />
 
-	<img id = "test_image" width = 500 height = 500 display = "none" src = "">
+
+	<img id = "test_image" width = 1 height = 1 display = "none" src = "">
 
 
 	</div>

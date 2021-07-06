@@ -28,6 +28,12 @@ class MicroscopeController():
 
 		self.pos = {'x':0, 'y':0, 'z':0}
 
+		self.internal_state = {
+			"move_units": "0.1",
+			"move_axis": "x",
+			"move_direction":"+"
+		}
+
 
 	def disconnect(self):
 		self.disconnect()
@@ -82,16 +88,37 @@ class MicroscopeController():
 		return _filename
 
 
-	def move_rel(self, rel_x = 0, rel_y = 0, rel_z = 0):
-		
-		target_x = self.pos['x'] + rel_x
-		target_y = self.pos['y'] + rel_y
-		target_z = self.pos['z'] + rel_z
+	def move_rel(self, distance):
+
+		if self.internal_state["move_units"] == "0.1":
+			distance *= 0.1
+		elif self.internal_state["move_units"] == "1.0":
+			distance *= 1
+		elif self.internal_state["move_units"] == "10":
+			distance *= 10
+
+		print("distance to move", distance)
+
+		if self.internal_state["move_direction"] == "-":
+			distance *= -1
+
+		target_x = self.pos['x']
+		target_y = self.pos['y']
+		target_z = self.pos['z']
+
+		if self.internal_state["move_axis"] == "x":
+			target_x += distance
+		elif self.internal_state["move_axis"] == "y":
+			target_y += distance
+		elif self.internal_state["move_axis"] == "z":
+			target_z += distance
 
 		self.move(abs_x = target_x, abs_y = target_y, abs_z = target_z)
 
 
 	def move(self, abs_x = 0, abs_y = 0, abs_z = 0):
+
+		print(abs_x, abs_y, abs_z)
 
 		move_str = ""
 
@@ -117,7 +144,7 @@ class MicroscopeController():
 				move_str += "Z{:.2f}".format(abs_z)
 
 		if not move_str == "":
-			print(move_str)
+			print("Moving with str G0 ", move_str)
 			if not self.offline:
 				self.p.send(f"G0 {move_str}")
 		
@@ -172,7 +199,7 @@ from flask import jsonify, render_template, request, send_file, make_response
 def index():
 
 	global controller
-	controller = MicroscopeController('/dev/ttyUSB0')
+	controller = MicroscopeController('/dev/ttyUSB0', offline = True)
 
 	return render_template('index.html')
 
@@ -229,6 +256,48 @@ def move_home():
 	return data
 
 
+@app.route('/set_units', methods = ['POST'])
+def set_units():
+
+	controller.internal_state["move_units"] = request.values.get("move_unit")
+
+	#controller.internal_state = state
+
+	data = {"hi": "hi"}
+	data = jsonify(data)
+	return data
+
+@app.route('/set_axis', methods = ['POST'])
+def set_axis():
+	controller.internal_state["move_axis"] = request.values.get("move_axis")
+
+	print(controller.internal_state)
+	data = {"hi": "hi"}
+	data = jsonify(data)
+	return data
+
+@app.route('/set_direction', methods = ['POST'])
+def set_direction():
+	controller.internal_state["move_axis"] = request.values.get("move_direction")
+
+	#print(controller.internal_state)
+	data = {"hi": "hi"}
+	data = jsonify(data)
+	return data
+
+
+@app.route('/move_by', methods = ['POST'])
+def move_by():
+	distance = request.values.get('move_by')
+	#print("distance returned:",distance)
+
+	controller.move_rel(float(distance))
+
+	time.sleep(1)
+
+	data = {"hi": "hi"}
+	data = jsonify(data)
+	return data
 """
 features to implement:
 

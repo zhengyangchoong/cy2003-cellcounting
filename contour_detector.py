@@ -1,6 +1,25 @@
 import cv2
 import numpy as np
 
+def drawBasicGrid(img, pxstep, colour):
+    """
+    adds horizontal and vertical lines on image input to mimic hemocytometer gridlines
+
+    :param      img: 3d matrix of image
+    :param      pxstep: pixel distance between gridlines
+    :param      colour: colour of lines in RGB
+    """
+    x = pxstep 
+    y = pxstep 
+    #Draw all x lines
+    while x < img.shape[1]:
+        cv2.line(img, (x, 0), (x, img.shape[0]), color=colour, thickness=5)
+        x += pxstep 
+    
+    while y < img.shape[0]:
+        cv2.line(img, (0, y), (img.shape[1], y), color=colour,thickness=5)
+        y += pxstep 
+
 
 def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
   """
@@ -11,7 +30,7 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
   :param      mm_distance: number of pixels per mm
   :param      max_area_cells: maximum enclosed area that contour detector will accept for it to count as a cell
 
-  returns an integer as the cell count of the image
+  returns an integer as the cell count of the image and gridded image with detected contours
   """
   image = cv2.imread(image_path)
   image = cv2.bitwise_not(image) 
@@ -43,5 +62,8 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
           cv2.drawContours(image, [c], -1, (36, 255, 12), 2)
           white_dots.append(c)
 
-  return len(white_dots) # cell count
+  drawBasicGrid(image, 148, (52, 52, 52)) # draw vertical and horizontal lines
+  image = cv2.copyMakeBorder(image, 7, 5, 7, 5, cv2.BORDER_CONSTANT, value=(52, 52, 52)) # draw border lines
+
+  return len(white_dots), image # returns cell count and image with drawn contours
 

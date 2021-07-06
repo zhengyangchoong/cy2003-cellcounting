@@ -16,6 +16,7 @@ def drawBasicGrid(img, pxstep, colour):
         cv2.line(img, (x, 0), (x, img.shape[0]), color=colour, thickness=5)
         x += pxstep 
     
+    # Draw all y lines
     while y < img.shape[0]:
         cv2.line(img, (0, y), (img.shape[1], y), color=colour,thickness=5)
         y += pxstep 

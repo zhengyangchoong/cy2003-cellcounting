@@ -272,7 +272,7 @@ def move_abs():
 	##
 
 
-	data = {"pos": controller.get_pos()}
+	data = {"pos": [0,0,0]}
 	data = jsonify(data)
 
 	return render_template('index.html', data = data)

@@ -212,7 +212,7 @@ from flask import jsonify, render_template, request, send_file, make_response
 def index():
 
 	global controller
-	controller = MicroscopeController('/dev/ttyUSB0', offline = True)
+	controller = MicroscopeController('/dev/ttyUSB0', offline = False)
 
 	return render_template('index.html')
 

@@ -266,11 +266,16 @@ def move_abs():
 	print(request.form['set_y_pos'])
 	print(request.form['set_z_pos'])
 
+	##
+	## 
+	## update intetn
+	##
+
 
 	data = {"pos": controller.get_pos()}
 	data = jsonify(data)
 
-	return data
+	return render_template('index.html', data = data)
 
 
 @app.route('/move_home', methods = ['GET', 'POST'])

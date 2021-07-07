@@ -132,34 +132,37 @@ class MicroscopeController():
 	def move(self, abs_x = 0, abs_y = 0, abs_z = 0):
 
 		print(abs_x, abs_y, abs_z)
+		try:
 
-		move_str = ""
+			move_str = ""
 
-		if abs_x == "":
-			abs_x = 0
-		if abs_y == "":
-			abs_y = 0
-		if abs_z == "":
-			abs_z = 0
-		
-		abs_x = int(abs_x)
-		abs_y = int(abs_y)
-		abs_z = int(abs_z)
+			if abs_x == "":
+				abs_x = 0
+			if abs_y == "":
+				abs_y = 0
+			if abs_z == "":
+				abs_z = 0
+			
+			abs_x = float(abs_x)
+			abs_y = float(abs_y)
+			abs_z = float(abs_z)
 
-		if abs_x:
-			if 0 <= abs_x <= 150: # hard coded limits
-				move_str += "X{:.2f}".format(abs_x)
-		if abs_y:
-			if 0 <= abs_y <= 180: # hard coded limits
-				move_str += "Y{:.2f}".format(abs_y)
-		if abs_z:
-			if 0 <= abs_z <= 45: # hard coded limits
-				move_str += "Z{:.2f}".format(abs_z)
+			if abs_x:
+				if 0 <= abs_x <= 150: # hard coded limits
+					move_str += "X{:.2f}".format(abs_x)
+			if abs_y:
+				if 0 <= abs_y <= 180: # hard coded limits
+					move_str += "Y{:.2f}".format(abs_y)
+			if abs_z:
+				if 0 <= abs_z <= 45: # hard coded limits
+					move_str += "Z{:.2f}".format(abs_z)
 
-		if not move_str == "":
-			print("Moving with str G0 ", move_str)
-			if not self.offline:
-				self.p.send(f"G0 {move_str}")
+			if not move_str == "":
+				print("Moving with str G0 ", move_str)
+				if not self.offline:
+					self.p.send(f"G0 {move_str}")
+		except:
+			print("failed for some reason")
 		
 	def get_pos(self):
 		position = ""
@@ -253,7 +256,7 @@ def get_position():
 	return data
 
 
-@app.route('/move_abs', methods = ['POST', 'GET'])
+@app.route('/move_abs', methods = ['POST',])
 def move_abs():
 
 	controller.move(request.form['set_x_pos'], request.form['set_y_pos'], request.form['set_z_pos'])
@@ -267,7 +270,7 @@ def move_abs():
 	data = {"pos": controller.get_pos()}
 	data = jsonify(data)
 
-	return render_template('index.html', data = data)
+	return data
 
 
 @app.route('/move_home', methods = ['GET', 'POST'])

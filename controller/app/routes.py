@@ -11,22 +11,25 @@ except:
 import datetime
 import subprocess
 import os
-
+import numpy as np
 import contour_detector
-
+from pathlib import Path
+import cv2
 
 print(os.getcwd())
 
 class MicroscopeController():
 
-	def __init__(self, port = "/dev/ttyUSB0", offline = False):
+	def __init__(self, offline = False):
 
 		self.offline = offline
 		self.port = port
 
+		ports = [str(p) for p in Path("/dev").glob("ttyUSB*")]
+
 		if not offline:
 		
-			self.p = printcore(port, 250000)
+			self.p = printcore(ports[0], 250000)
 			self.p.connect()
 
 		self.pos = {'x':0, 'y':0, 'z':0}
@@ -39,11 +42,20 @@ class MicroscopeController():
 
 		#warm up camera
 
-		command = f"fswebcam -r 1920x1080 --jpeg 90 -D 4 -F 2 --no-banner"
+		#command = f"fswebcam -r 1920x1080 --jpeg 90 -D 4 -F 2 --no-banner"
 
-		process = subprocess.call(command.split(" "))
+		#process = subprocess.call(command.split(" "))
 
-		time.sleep(4)
+		self.cap = cv2.VideoCapture(0)
+
+		if (not self.cap.isOpened()):
+			print("Camera not found")
+
+		self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+		width = 1920
+		height = 1080
+		self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+		self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
 
 	def disconnect(self):
@@ -73,25 +85,28 @@ class MicroscopeController():
 
 		_filename = os.path.join(DEFAULT_FOLDER, file_id + ".jpg")
 
-		command = f"fswebcam -r 1920x1080 --jpeg 90 -D 4 -F 1 --no-banner --save {_filename}"
+		retval, image = self.cap.read()
 
-		process = subprocess.call(command.split(" "))
+		if retval:
+			cv2.imwrite(_filename, image)
+		else:
+			print("camera not available")
 
-		if undistort:
+		# if undistort:
 
-			mtx = np.load("intrinisic_matrix.npy")
-			dist = np.load("distortion_coeff.npy")
+		# 	mtx = np.load("intrinisic_matrix.npy")
+		# 	dist = np.load("distortion_coeff.npy")
 
-			img = cv.imread('raw/{}.jpg'.format(file_id))
-			h,  w = img.shape[:2]
-			newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+		# 	img = cv.imread('raw/{}.jpg'.format(file_id))
+		# 	h,  w = img.shape[:2]
+		# 	newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 
-			dst = cv.undistort(img, mtx, dist, None, newcameramtx)
-			# crop the image
-			x, y, w, h = roi
-			dst = dst[y:y+h, x:x+w]
-			_filename = 'capture/{}.png'.format(file_id)
-			cv.imwrite(_filename, dst)
+		# 	dst = cv.undistort(img, mtx, dist, None, newcameramtx)
+		# 	# crop the image
+		# 	x, y, w, h = roi
+		# 	dst = dst[y:y+h, x:x+w]
+		# 	_filename = 'capture/{}.png'.format(file_id)
+		# 	cv.imwrite(_filename, dst)
 
 
 		return _filename
@@ -149,13 +164,16 @@ class MicroscopeController():
 
 			if abs_x:
 				if 0 <= abs_x <= 150: # hard coded limits
-					move_str += "X{:.2f}".format(abs_x)
+					move_str += "X{:.2f} ".format(abs_x)
+					self.pos["x"] = abs_x
 			if abs_y:
 				if 0 <= abs_y <= 180: # hard coded limits
-					move_str += "Y{:.2f}".format(abs_y)
+					move_str += "Y{:.2f} ".format(abs_y)
+					self.pos["y"] = abs_y
 			if abs_z:
 				if 0 <= abs_z <= 45: # hard coded limits
-					move_str += "Z{:.2f}".format(abs_z)
+					move_str += "Z{:.2f} ".format(abs_z)
+					self.pos["z"] = abs_z
 
 			if not move_str == "":
 				print("Moving with str G0 ", move_str)
@@ -187,17 +205,16 @@ class MicroscopeController():
 
 				coords = list(map(lambda x: float(x.split(":")[1]), coords))
 
+				self.pos["x"] = coords[0]
+				self.pos["y"] = coords[1]
+				self.pos["z"] = coords[2]
+
 				print("@@@@", coords)
 				return coords
 			except:
-				return [0,0,0]
+				return [self.pos["x"], self.pos["y"], self.pos["z"]]
 
-		return [0,0,0]
-
-	def get_status(self):
-		#print(self.rpc.status())
-
-		pass
+		return [self.pos["x"], self.pos["y"], self.pos["z"]]
 
 	def home(self):
 
@@ -215,7 +232,7 @@ from flask import jsonify, render_template, request, send_file, make_response
 def index():
 
 	global controller
-	controller = MicroscopeController('/dev/ttyUSB1', offline = False)
+	controller = MicroscopeController(offline = False)
 
 	return render_template('index.html')
 
@@ -255,6 +272,17 @@ def get_position():
 
 	return data
 
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+    
+@app.route('/shutdown', methods=['GET'])
+def shutdown():
+	shutdown_server()
+	controller.cap.release()
+	return 'Server shutting down...'
 
 @app.route('/move_abs', methods = ['POST',])
 def move_abs():
@@ -332,14 +360,3 @@ def move_by():
 	data = {"hi": "hi"}
 	data = jsonify(data)
 	return data
-"""
-features to implement:
-
-1. motion reporting
-2. move to
-3. home
-4. image display
-
-
-
-"""

@@ -27,6 +27,8 @@
 		border:  0.5em auto;
 		padding: 0.25em;
 		margin: 0.25em;
+		height:  5em;
+		width: 5em;
 	}
 	</style>
 
@@ -105,9 +107,11 @@
 				url:'/capture_and_count',
 				method : 'POST',
 				success:function(data){
+
+					console.log(data["count"])
 					document.getElementById("test_image").src = data["source"];
 					document.getElementById("test_image").display = "block"
-					document.getElementById("count_show").html = data["count"]
+					document.getElementById("count_show").textContent = data["count"]
 					document.getElementById("test_image").width = 400
 					document.getElementById("test_image").height = 400
 
@@ -312,6 +316,14 @@
 
 	<h2>Movement Control</h2>
 
+	<img id = "test_image" width = 1 height = 1 display = "none" src = "">
+
+	<br />
+	<h2>
+	Counts:
+	<span id ="count_show"></span>
+	</h2>
+	<br/>
 	<button type = "button" id = "get_pos">Get Current Position</button>
 	<button type = "button" id = "home">Home motor</button>
 	<button type = "button" id = "image">Send image</button>
@@ -341,8 +353,7 @@
 
 
 	<br />
-	Counts:
-	<span id ="count_show"></span>
+
 	<br />
 	Current position:
 	<br />
@@ -367,8 +378,6 @@
 	</form>
 	<br />
 
-
-	<img id = "test_image" width = 1 height = 1 display = "none" src = "">
 
 
 	</div>

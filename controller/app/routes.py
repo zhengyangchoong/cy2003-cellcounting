@@ -23,9 +23,15 @@ class MicroscopeController():
 	def __init__(self, offline = False):
 
 		self.offline = offline
-		self.port = port
 
-		ports = [str(p) for p in Path("/dev").glob("ttyUSB*")]
+		if not offline:
+			try:
+				ports = [str(p) for p in Path("/dev").glob("ttyUSB*")]
+				self.port = ports[0]
+			except:
+				print("device not connected")
+
+		
 
 		if not offline:
 		
@@ -45,17 +51,6 @@ class MicroscopeController():
 		#command = f"fswebcam -r 1920x1080 --jpeg 90 -D 4 -F 2 --no-banner"
 
 		#process = subprocess.call(command.split(" "))
-
-		self.cap = cv2.VideoCapture(0)
-
-		if (not self.cap.isOpened()):
-			print("Camera not found")
-
-		self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
-		width = 1920
-		height = 1080
-		self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-		self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
 
 	def disconnect(self):
@@ -85,12 +80,27 @@ class MicroscopeController():
 
 		_filename = os.path.join(DEFAULT_FOLDER, file_id + ".jpg")
 
+
+		self.cap = cv2.VideoCapture(0)
+
+		if (not self.cap.isOpened()):
+			print("Camera not found")
+
+		self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+		width = 1920
+		height = 1080
+		self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+		self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
+
 		retval, image = self.cap.read()
 
 		if retval:
 			cv2.imwrite(_filename, image)
 		else:
 			print("camera not available")
+
+		self.cap.release()
 
 		# if undistort:
 
@@ -232,7 +242,7 @@ from flask import jsonify, render_template, request, send_file, make_response
 def index():
 
 	global controller
-	controller = MicroscopeController(offline = False)
+	controller = MicroscopeController(offline = True)
 
 	return render_template('index.html')
 

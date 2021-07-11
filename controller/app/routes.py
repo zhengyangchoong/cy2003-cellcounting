@@ -370,3 +370,45 @@ def move_by():
 	data = {"hi": "hi"}
 	data = jsonify(data)
 	return data
+
+
+
+def getfocus(fp):
+
+	img = cv2.imread(fp, 0)
+	
+	centre_y = img.shape[0]//2
+	centre_x = img.shape[1]//2
+
+	dx = 900
+	dy = 900
+
+	img = img[centre_y - dy//2: centre_y + dy//2, centre_x - dx//2: centre_x + dx//2]
+
+	return (cv2.Laplacian(img, cv2.CV_32F).var())
+
+
+@app.route('/autofocus', methods = ['POST'])
+def autofocus():
+
+	scan_distance = float(request.values.get('scan_direction'))
+	scan_direction = request.values.get('scan_direction')
+	scan_step = float(request.values.get('scan_step')) 
+
+	# steps per mm
+
+
+	# scan direction
+	# scan step
+	# scan distance
+	# input from ^
+	# 
+	# 
+	# 
+	# acquire
+	# 
+	# threshold
+	
+	
+	for i in range(N_STEP):
+		pass

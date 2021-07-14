@@ -427,7 +427,7 @@ def autofocus():
 	values = []
 
 
-	N_STEP = scan_distance // scan_step
+	N_STEP = int(scan_distance // scan_step)
 	for i in range(N_STEP):
 		controller.simple_move(axis = "z", distance = scan_step)
 		fp = controller.acquire()

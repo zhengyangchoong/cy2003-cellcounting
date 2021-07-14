@@ -4,9 +4,9 @@ import time
 
 try:
 	from app.printrun.printcore import printcore
-	from printrun.printcore import printcore
-except:
 	
+except:
+	from printrun.printcore import printcore
 	pass
 
 import datetime

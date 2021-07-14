@@ -186,7 +186,7 @@ class MicroscopeController():
 					move_str += "Y{:.2f} ".format(abs_y)
 					self.pos["y"] = abs_y
 			if abs_z:
-				if 0 <= abs_z <= 45: # hard coded limits
+				if 0 <= abs_z <= 60: # hard coded limits
 					move_str += "Z{:.2f} ".format(abs_z)
 					self.pos["z"] = abs_z
 

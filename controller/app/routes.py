@@ -449,6 +449,7 @@ def autofocus():
 	print("distance", i * scan_step, "index", i)
 
 	max_index = values.index(max(values))
+	first_max = max(values)
 
 	print("max_index", max_index)
 
@@ -462,6 +463,7 @@ def autofocus():
 	small_scan_step = 0.01
 
 	values = []
+	
 	controller.simple_move(axis = "z", distance = max_index * scan_step - 10*small_scan_step)
 
 	for i in range(20):
@@ -470,9 +472,9 @@ def autofocus():
 		time.sleep(0.1)
 
 		_focus = getfocus(fp)
-		#values.append(_focus)
+		values.append(_focus)
 
-		if _focus > max(values):
+		if _focus > first_max:
 			values.append(_focus)
 		print(_focus)
 

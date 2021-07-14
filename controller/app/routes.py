@@ -55,6 +55,8 @@ class MicroscopeController():
 
 
 	def disconnect(self):
+		self.p.send("M107")
+		time.sleep(0.5)
 		self.disconnect()
 		return 0
 

@@ -230,15 +230,17 @@ class MicroscopeController():
 			except:
 				return [self.pos["x"], self.pos["y"], self.pos["z"]]
 
-		self.p.send("M106 S255")
+
 
 		return [self.pos["x"], self.pos["y"], self.pos["z"]]
 
 	def home(self):
 
 		if not self.offline:
+			self.p.send("M106 S255")
 			self.p.send("G28")
 			time.sleep(5)
+
 		return 0
 
 

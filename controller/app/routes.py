@@ -1,5 +1,4 @@
 
-import base64
 import time
 
 try:
@@ -10,12 +9,12 @@ except:
 	pass
 
 import datetime
-import subprocess
 import os
 import numpy as np
 import contour_detector
 from pathlib import Path
 import cv2
+import numpy as np
 
 print(os.getcwd())
 
@@ -248,7 +247,7 @@ class MicroscopeController():
 
 
 from app import app
-from flask import jsonify, render_template, request, send_file, make_response
+from flask import json, jsonify, render_template, request, send_file, make_response
 @app.route('/')
 @app.route('/index')
 def index():
@@ -441,7 +440,6 @@ def autofocus():
 
 		_focus = getfocus(fp)
 		values.append(_focus)
-		print(_focus)
 
 		if _focus > THRESHOLD:
 			break
@@ -484,6 +482,86 @@ def autofocus():
 	data = {"focal_distance": controller.pos["z"]}
 	data = jsonify(data)
 	return data
+
+
+@app.route('/gradient', methods = ['POST'])
+def gradient_descent():
+
+	def update_grad(x1, x2, y1, y2):
+		g = (y2-y1)/(x2-x1)	
+		if g >= 0:
+			return np.exp(-np.abs(g))
+		else:
+			return -1 * np.exp(-np.abs(g))
+	
+	
+	total_scan_range = 3
+	
+	patience = 5 # wait for 5 steps for any improvement in the focus
+
+	counter = 0 # since last improvement
+
+	initial_scan_step = 0.2
+
+	max_iterations = 20
+	total_steps = 0
+
+	starting = True
+
+	X = []
+	Y = []
+
+	best_score = 0
+
+	start_z = controller.pos["z"]
+
+	while counter < patience:
+
+		if controller.pos["z"] - start_z >= total_scan_range or total_steps >= max_iterations:
+			print("Could not find maximum focus within specified range of {}mm".format(total_scan_range))
+
+			# print report / return json with report on max location, then move to that location
+			break
+		if starting:
+			X.append(start_z)
+			Y.append(getfocus(controller.acquire()))
+
+			controller.simple_move(axis = "z", distance = initial_scan_step)
+
+			X.append(initial_scan_step)
+			Y.append(getfocus(controller.acquire()))
+
+			best_score = max(Y)
+
+		else:
+			dx = update_grad(X[-2], X[-1], Y[-2], Y[-1])			
+			controller.simple_move(axis = "z", distance = dx)
+			X.append((X[-1] + dx))
+			Y.append(getfocus(controller.acquire()))
+
+			
+		if Y[-1] >= best_score:
+			best_score = max(Y)
+			counter = 0
+
+		total_steps += 1
+
+	# best location and index:
+
+	best_focus = Y[index(max(Y))]
+	best_location = X[index(max(Y))]	
+	controller.move(abs_z = best_location, abs_x = "", abs_z = "")
+
+	data = {"Y": best_focus, "X": best_location}
+	print(data)
+	data = jsonify(data)
+
+	return data
+
+	
+
+
+		
 
 
 

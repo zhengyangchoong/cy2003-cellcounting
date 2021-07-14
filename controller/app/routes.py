@@ -249,6 +249,7 @@ def index():
 
 	global controller
 	controller = MicroscopeController(offline = False)
+	controller.home()
 
 	return render_template('index.html')
 

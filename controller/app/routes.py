@@ -248,7 +248,7 @@ from flask import jsonify, render_template, request, send_file, make_response
 def index():
 
 	global controller
-	controller = MicroscopeController(offline = True)
+	controller = MicroscopeController(offline = False)
 
 	return render_template('index.html')
 

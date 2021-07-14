@@ -1,4 +1,5 @@
 import cv2
+import datetime
 import numpy as np
 
 def drawBasicGrid(img, pxstep, colour):
@@ -66,7 +67,7 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
   drawBasicGrid(image, 148, (52, 52, 52)) # draw vertical and horizontal lines
   image = cv2.copyMakeBorder(image, 7, 5, 7, 5, cv2.BORDER_CONSTANT, value=(52, 52, 52)) # draw border lines
 
-  output_path = "app/static/capture/test.jpg"
+  output_path = "app/static/capture/{}.jpg".format(datetime.datetime.now(), "%Y%m%d-%H%M%S")
 
   cv2.imwrite(output_path,image)
 

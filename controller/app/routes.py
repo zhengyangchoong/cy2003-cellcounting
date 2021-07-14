@@ -4,9 +4,10 @@ import time
 
 try:
 	from app.printrun.printcore import printcore
-except:
 	from printrun.printcore import printcore
-
+except:
+	
+	pass
 
 import datetime
 import subprocess
@@ -126,6 +127,21 @@ class MicroscopeController():
 
 		return (count, img)
 
+	def simple_move(self, axis = "x", distance = 0):
+
+		target_x = self.pos['x']
+		target_y = self.pos['y']
+		target_z = self.pos['z']
+
+		if axis == "x":
+			target_x += distance
+		elif axis == "y":
+			target_y += distance
+		elif axis == "z":
+			target_z += distance
+
+		self.move(abs_x = target_x, abs_y = target_y, abs_z = target_z)
+
 	def move_rel(self, distance):
 
 		if self.internal_state["move_units"] == "0.1":
@@ -140,18 +156,7 @@ class MicroscopeController():
 		if self.internal_state["move_direction"] == "-":
 			distance *= -1
 
-		target_x = self.pos['x']
-		target_y = self.pos['y']
-		target_z = self.pos['z']
-
-		if self.internal_state["move_axis"] == "x":
-			target_x += distance
-		elif self.internal_state["move_axis"] == "y":
-			target_y += distance
-		elif self.internal_state["move_axis"] == "z":
-			target_z += distance
-
-		self.move(abs_x = target_x, abs_y = target_y, abs_z = target_z)
+		self.simple_move(axis = self.intern_state["move_axis"])
 
 
 	def move(self, abs_x = 0, abs_y = 0, abs_z = 0):
@@ -190,16 +195,17 @@ class MicroscopeController():
 				if not self.offline:
 					self.p.send(f"G0 {move_str}")
 		except:
-			print("failed for some reason")
+			print("Error!")
 		
 	def get_pos(self):
 		position = ""
 		if not self.offline:
 			self.p.send("M114")
 
-			for i in range(3):
+			for i in range(5):
 				test_str = self.p.printer.readline()
 				print(i, test_str)
+				time.sleep(0.20)
 
 				if len(test_str) > 4:
 					position = test_str
@@ -391,9 +397,14 @@ def getfocus(fp):
 @app.route('/autofocus', methods = ['POST'])
 def autofocus():
 
-	scan_distance = float(request.values.get('scan_direction'))
-	scan_direction = request.values.get('scan_direction')
-	scan_step = float(request.values.get('scan_step')) 
+	#scan_distance = float(request.values.get('scan_distance')) # total distane to travel
+	#scan_direction = request.values.get('scan_direction')
+	#scan_step = float(request.values.get('scan_step')) # step size
+	#
+	
+
+	scan_distance = 3
+	scan_step = 0.1
 
 	# steps per mm
 
@@ -408,7 +419,33 @@ def autofocus():
 	# acquire
 	# 
 	# threshold
+	# 
 	
+	THRESHOLD = 10
 	
+	values = []
+
+
+	N_STEP = scan_distance // scan_step
 	for i in range(N_STEP):
-		pass
+		controller.simple_move(axis = "z", distance = scan_step)
+		fp = controller.acquire()
+		time.sleep(0.1)
+
+		_focus = getfocus(fp)
+		values.append(_focus)
+
+		if _focus > THRESHOLD:
+			break
+
+	print(i * scan_step)
+
+	data = {"focal_distance": controller.pos["z"]}
+	data = jsonify(data)
+	return data
+
+
+
+
+
+

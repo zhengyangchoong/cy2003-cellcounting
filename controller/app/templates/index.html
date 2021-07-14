@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="text-gray-900 leading-tight">
 <head>
 <meta charset="utf-8"/>
 <title>I love CY2003!</title>
  	<script type="text/javascript"
          src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	
 	<!--Import materialize.css-->
+	<!--
 	<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.min.css') }}"  media="screen,projection"/>
+	-->
+	<link type="text/css" rel = "stylesheet" href="{{ url_for('static', filename='tailwind.css') }}"/>
 
 	<style>
 
@@ -27,8 +31,6 @@
 		border:  0.5em auto;
 		padding: 0.25em;
 		margin: 0.25em;
-		height:  5em;
-		width: 5em;
 	}
 	</style>
 
@@ -255,7 +257,21 @@
 			})
 
 		})
+		$(function(){
+			$("#autofocus").on('click', function(e){
 
+				$.ajax({
+					url: '/autofocus',
+					method:'POST',
+					data:{
+					},
+					success:function(data){
+						console.log(data)
+					}
+				})
+			})
+
+		})
 
 		$(function(){
 			$("#move_1").on('click', function(e){
@@ -310,52 +326,53 @@
 
 </head>
 
-<body>
+<body class="min-h-screen bg-gray-100 font-sans">
 	<div id = "main">
-	<h1>Designing a Cell Counting microscope</h1>
+	<h1 class="text-6xl font-normal leading-normal mt-0 mb-2 text-blueGray-800">Designing a Cell Counting microscope</h1>
 
-	<h2>Movement Control</h2>
+	<h2 class="text-5xl font-normal leading-normal mt-0 mb-2 text-pink-800">Movement Control</h2>
 
 	<img id = "test_image" width = 1 height = 1 display = "none" src = "">
 
 	<br />
-	<h2>
+	<h2 class="text-5xl font-normal leading-normal mt-0 mb-2 text-pink-800">
 	Counts:
 	<span id ="count_show"></span>
 	</h2>
 	<br/>
-	<button type = "button" id = "get_pos">Get Current Position</button>
-	<button type = "button" id = "home">Home motor</button>
-	<button type = "button" id = "image">Send image</button>
-	<button type = "button" id = "count">Take picture and count</button>
+	<button type = "button" id = "get_pos" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Get Current Position</button>
+	<button type = "button" id = "home" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Home motor</button>
+	<button type = "button" id = "image" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Send image</button>
+	<button type = "button" id = "count" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Take picture and count</button>
+	<button type = "button" id = "autofocus" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Attempt to autofocus</button>
 	<br/>
 
 
-	<button type = "button" id = "set_1">Set 0.1mm</button>
-	<button type = "button" id = "set_2">Set 1.0mm</button>
-	<button type = "button" id = "set_3">Set 10mm</button>
+	<button type = "button" id = "set_1" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Set 0.1mm</button>
+	<button type = "button" id = "set_2" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Set 1.0mm</button>
+	<button type = "button" id = "set_3" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Set 10mm</button>
 
 	<br />
 
-	<button type = "button" id = "set_X">Set X</button>
-	<button type = "button" id = "set_Y">Set Y</button>
-	<button type = "button" id = "set_Z">Set Z</button>
+	<button type = "button" id = "set_X" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Set X</button>
+	<button type = "button" id = "set_Y" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Set Y</button>
+	<button type = "button" id = "set_Z" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Set Z</button>
 
 	<br />
 
-	<button type = "button" id = "switch_direction">Flip Direction</button>
+	<button type = "button" id = "switch_direction" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Flip Direction</button>
 
 	<br />
 
-	<button type = "button" id = "move_1">Move 1</button>
-	<button type = "button" id = "move_2">Move 2</button>
-	<button type = "button" id = "move_5">Move 5</button>
+	<button type = "button" id = "move_1" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Move 1</button>
+	<button type = "button" id = "move_2" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Move 2</button>
+	<button type = "button" id = "move_5" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Move 5</button>
 
 
 	<br />
 
 	<br />
-	Current position:
+	<span class="text-5xl font-normal leading-normal mt-0 mb-2 text-pink-800">Current position:</span>
 	<br />
 
 	x: <span id = "x_pos"> </span>
@@ -374,7 +391,7 @@
 		z:
 		<input type="text" id="set_z_pos" name="set_z_pos"><br />
 
-		<input type="submit" value = "Move to position!">
+		<input type="submit" value = "Move to position!" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
 	</form>
 	<br />
 

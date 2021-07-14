@@ -156,7 +156,7 @@ class MicroscopeController():
 		if self.internal_state["move_direction"] == "-":
 			distance *= -1
 
-		self.simple_move(axis = self.intern_state["move_axis"])
+		self.simple_move(axis = self.internal_state["move_axis"])
 
 
 	def move(self, abs_x = 0, abs_y = 0, abs_z = 0):

@@ -230,6 +230,8 @@ class MicroscopeController():
 			except:
 				return [self.pos["x"], self.pos["y"], self.pos["z"]]
 
+		self.p.send("M106 S255")
+
 		return [self.pos["x"], self.pos["y"], self.pos["z"]]
 
 	def home(self):
@@ -435,6 +437,7 @@ def autofocus():
 
 		_focus = getfocus(fp)
 		values.append(_focus)
+		print(_focus)
 
 		if _focus > THRESHOLD:
 			break

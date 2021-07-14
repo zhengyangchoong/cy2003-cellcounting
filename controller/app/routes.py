@@ -239,7 +239,7 @@ class MicroscopeController():
 	def home(self):
 
 		if not self.offline:
-			self.p.send("M106 S255")
+			#self.p.send("M106 S255")
 			self.p.send("G28")
 			time.sleep(5)
 
@@ -410,7 +410,7 @@ def autofocus():
 	#
 	
 
-	scan_distance = 3
+	scan_distance = 2
 	scan_step = 0.1
 
 	# steps per mm
@@ -447,6 +447,29 @@ def autofocus():
 			break
 
 	print(i * scan_step)
+
+	max_index = values.index(max(values))
+
+	# move back
+	time.sleep(1)
+
+	controller.simple_move(axis = "z", distance = scan_distance * -1)
+
+	time.sleep(1)
+
+	small_scan_step = 0.01
+
+	controller.simple_move(axis = "z", distance = max_index * scan_step - 10*small_scan_step)
+
+	for i in range(20):
+		controller.simple_move(axis = "z", distance = small_scan_step)
+		fp = controller.acquire()
+		time.sleep(0.1)
+
+		_focus = getfocus(fp)
+		values.append(_focus)
+		print(_focus)
+
 
 	data = {"focal_distance": controller.pos["z"]}
 	data = jsonify(data)

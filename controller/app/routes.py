@@ -423,7 +423,7 @@ def autofocus():
 	# threshold
 	# 
 	
-	THRESHOLD = 5
+	THRESHOLD = 10
 	
 	values = []
 
@@ -446,7 +446,7 @@ def autofocus():
 
 	max_index = values.index(max(values))
 
-	controller.simple_move(axis = "z", distance = scan_distance * -1)
+	controller.simple_move(axis = "z", distance = -2)
 
 	time.sleep(1)
 

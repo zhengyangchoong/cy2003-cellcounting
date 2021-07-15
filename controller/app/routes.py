@@ -550,7 +550,7 @@ def gradient_descent():
 
 	best_focus = Y[index(max(Y))]
 	best_location = X[index(max(Y))]	
-	controller.move(abs_z = best_location, abs_x = "", abs_z = "")
+	controller.move(abs_z = best_location, abs_x = "", abs_y = "")
 
 	data = {"Y": best_focus, "X": best_location}
 	print(data)

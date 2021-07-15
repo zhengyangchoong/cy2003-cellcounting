@@ -98,7 +98,7 @@ class MicroscopeController():
 		retval, image = self.cap.read()
 
 		if retval:
-			cv2.imwrite(_filename, image)
+			cv2.imwrite(_filename, image[420, 1500,:])
 		else:
 			print("camera not available")
 

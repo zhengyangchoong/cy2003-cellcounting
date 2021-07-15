@@ -35,299 +35,305 @@
 	</style>
 
 	<script>
+		$(document).ready(function () {
 
-		$("#pls_move").click(function(e){
-			console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-			console.log(
-				$("#set_x_pos").attr("value"),
-				$("#set_y_pos").attr("value"),
-				$("#set_z_pos").attr("value"))
-		})
+			$("#pls_move").click(function (e) {
+				console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+				console.log(
+					$("#set_x_pos").attr("value"),
+					$("#set_y_pos").attr("value"),
+					$("#set_z_pos").attr("value"))
+			})
 
-		internal_state = {
-			"move_unit": "0.1",
-			"move_axis": "x",
-			"move_direction":"+"
-		}
 
-		console.log(internal_state)
 
-		$(function(){
-		$('#get_pos').on('click', function(e) {
-		e.preventDefault()
-		console.log("GET POSITION")
-		$.ajax({
-			url:'/get_position',
-			//data:{"test": "test"},
-			method : 'POST',
-			success: function(data){
-				console.log("ASFSFDFDS")
-				$("#x_pos").html(data['pos'][0])
-				$("#y_pos").html(data['pos'][1])
-				$("#z_pos").html(data['pos'][2])
+			internal_state = {
+				"move_unit": "0.1",
+				"move_axis": "x",
+				"move_direction": "+"
 			}
-			})
 
-		})
-		})
+			console.log(internal_state)
 
-		$(function(){
-		$('#home').on('click', function(e) {
-		e.preventDefault()
+			$(function () {
+				$('#get_pos').on('click', function (e) {
+					e.preventDefault()
+					console.log("GET POSITION")
+					$.ajax({
+						url: '/get_position',
+						//data:{"test": "test"},
+						method: 'POST',
+						success: function (data) {
+							console.log("ASFSFDFDS")
+							$("#x_pos").html(data['pos'][0])
+							$("#y_pos").html(data['pos'][1])
+							$("#z_pos").html(data['pos'][2])
+						}
+					})
 
-		$.ajax({
-			url:'/move_home',
-			//data:{"test": "test"},
-			method : 'POST',
-			success: function(data){
-				console.log("homed")
-				$("#x_pos").html(data['pos'][0])
-				$("#y_pos").html(data['pos'][1])
-				$("#z_pos").html(data['pos'][2])
-			}
-			})
-		})
-
-		})
-
-		$(function(){
-
-			$("#image").on('click', function(e){
-			e.preventDefault()
-			$.ajax({
-				url:'/get_image',
-				method : 'POST',
-				success:function(data){
-					console.log(data)
-					document.getElementById("test_image").src = data["source"];
-					document.getElementById("test_image").display = "block"
-					document.getElementById("test_image").width = 640
-					document.getElementById("test_image").height = 480
-
-				}
-			})
-
-			})
-		})
-		$(function(){
-
-			$("#count").on('click', function(e){
-			e.preventDefault()
-			$.ajax({
-				url:'/capture_and_count',
-				method : 'POST',
-				success:function(data){
-
-					console.log(data["count"])
-					document.getElementById("test_image").src = data["source"];
-					document.getElementById("test_image").display = "block"
-					document.getElementById("count_show").textContent = data["count"]
-					document.getElementById("test_image").width = 400
-					document.getElementById("test_image").height = 400
-
-				}
-			})
-
-			})
-		})
-
-		$(function(){
-			$("#set_1").on('click', function(e){
-				internal_state["move_unit"] = "0.1"
-				$.ajax({
-					url: '/set_units',
-					method:'POST',
-					data: {
-						'move_unit': internal_state['move_unit'],
-						'move_axis': internal_state['move_axis'],
-						'move_direction': internal_state['move_direction'],
-
-					},
-					success:function(data){
-					}
 				})
 			})
 
-		})
-		$(function(){
-			$("#set_2").on('click', function(e){
-				internal_state["move_unit"] = "1.0"
-				$.ajax({
-					url: '/set_units',
-					method:'POST',
-					data:{
-						'move_unit': internal_state['move_unit'],
-						'move_axis': internal_state['move_axis'],
-						'move_direction': internal_state['move_direction'],
-					},
-					success:function(data){
-						console.log(data)
-					}
+			$(function () {
+				$('#home').on('click', function (e) {
+					e.preventDefault()
+
+					$.ajax({
+						url: '/move_home',
+						//data:{"test": "test"},
+						method: 'POST',
+						success: function (data) {
+							console.log("homed")
+							$("#x_pos").html(data['pos'][0])
+							$("#y_pos").html(data['pos'][1])
+							$("#z_pos").html(data['pos'][2])
+						}
+					})
+				})
+
+			})
+
+			$(function () {
+
+				$("#image").on('click', function (e) {
+					e.preventDefault()
+					$.ajax({
+						url: '/get_image',
+						method: 'POST',
+						success: function (data) {
+							console.log(data)
+							document.getElementById("test_image").src = data["source"];
+							document.getElementById("test_image").display = "block"
+							document.getElementById("test_image").width = 640
+							document.getElementById("test_image").height = 480
+
+						}
+					})
+
+				})
+			})
+			$(function () {
+
+				$("#count").on('click', function (e) {
+					e.preventDefault()
+					$.ajax({
+						url: '/capture_and_count',
+						method: 'POST',
+						success: function (data) {
+
+							console.log(data["count"])
+							document.getElementById("test_image").src = data["source"];
+							document.getElementById("test_image").display = "block"
+							document.getElementById("count_show").textContent = data["count"]
+							document.getElementById("test_image").width = 400
+							document.getElementById("test_image").height = 400
+
+						}
+					})
+
 				})
 			})
 
-		})
+			$(function () {
+				$("#set_1").on('click', function (e) {
+					internal_state["move_unit"] = "0.1"
+					$.ajax({
+						url: '/set_units',
+						method: 'POST',
+						data: {
+							'move_unit': internal_state['move_unit'],
+							'move_axis': internal_state['move_axis'],
+							'move_direction': internal_state['move_direction'],
 
-		$(function(){
-			$("#set_3").on('click', function(e){
-				internal_state["move_unit"] = "10"
-				$.ajax({
-					url: '/set_units',
-					method:'POST',
-					data:{
-						'move_unit': internal_state['move_unit'],
-						'move_axis': internal_state['move_axis'],
-						'move_direction': internal_state['move_direction'],
-					},
-					success:function(data){
-						console.log(data)
-					}
+						},
+						success: function (data) {
+						}
+					})
 				})
+
+			})
+			$(function () {
+				$("#set_2").on('click', function (e) {
+					internal_state["move_unit"] = "1.0"
+					$.ajax({
+						url: '/set_units',
+						method: 'POST',
+						data: {
+							'move_unit': internal_state['move_unit'],
+							'move_axis': internal_state['move_axis'],
+							'move_direction': internal_state['move_direction'],
+						},
+						success: function (data) {
+							console.log(data)
+						}
+					})
+				})
+
 			})
 
-		})
-		$(function(){
-			$("#set_X").on('click', function(e){
-				internal_state["move_axis"] = "x"
-				$.ajax({
-					url: '/set_axis',
-					method:'POST',
-					data:{
-						'move_unit': internal_state['move_unit'],
-						'move_axis': internal_state['move_axis'],
-						'move_direction': internal_state['move_direction'],
-					},
-					success:function(data){
-						console.log(data)
-					}
+			$(function () {
+				$("#set_3").on('click', function (e) {
+					internal_state["move_unit"] = "10"
+					$.ajax({
+						url: '/set_units',
+						method: 'POST',
+						data: {
+							'move_unit': internal_state['move_unit'],
+							'move_axis': internal_state['move_axis'],
+							'move_direction': internal_state['move_direction'],
+						},
+						success: function (data) {
+							console.log(data)
+						}
+					})
 				})
+
+			})
+			$(function () {
+				$("#set_X").on('click', function (e) {
+					internal_state["move_axis"] = "x"
+					$.ajax({
+						url: '/set_axis',
+						method: 'POST',
+						data: {
+							'move_unit': internal_state['move_unit'],
+							'move_axis': internal_state['move_axis'],
+							'move_direction': internal_state['move_direction'],
+						},
+						success: function (data) {
+							console.log(data)
+						}
+					})
+				})
+
+			})
+			$(function () {
+				$("#set_Y").on('click', function (e) {
+					internal_state["move_axis"] = "y"
+					$.ajax({
+						url: '/set_axis',
+						method: 'POST',
+						data: {
+							'move_unit': internal_state['move_unit'],
+							'move_axis': internal_state['move_axis'],
+							'move_direction': internal_state['move_direction'],
+						},
+						success: function (data) {
+							console.log(data)
+						}
+					})
+				})
+
+			})
+			$(function () {
+				$("#set_Z").on('click', function (e) {
+					internal_state["move_axis"] = "z"
+					$.ajax({
+						url: '/set_axis',
+						method: 'POST',
+						data: {
+							'move_unit': internal_state['move_unit'],
+							'move_axis': internal_state['move_axis'],
+							'move_direction': internal_state['move_direction'],
+						},
+						success: function (data) {
+							console.log(data)
+						}
+					})
+				})
+
 			})
 
-		})
-		$(function(){
-			$("#set_Y").on('click', function(e){
-				internal_state["move_axis"] = "y"
-				$.ajax({
-					url: '/set_axis',
-					method:'POST',
-					data:{
-						'move_unit': internal_state['move_unit'],
-						'move_axis': internal_state['move_axis'],
-						'move_direction': internal_state['move_direction'],
-					},
-					success:function(data){
-						console.log(data)
+			$(function () {
+				$("#flip_direction").on('click', function (e) {
+					if (internal_state["move_direction"] == "+") {
+						internal_state["move_direction"] = "-"
 					}
+					else {
+						internal_state["move_direction"] = "+"
+					}
+
+					$.ajax({
+						url: '/set_direction',
+						method: 'POST',
+						data: {
+							'move_unit': internal_state['move_unit'],
+							'move_axis': internal_state['move_axis'],
+							'move_direction': internal_state['move_direction'],
+						},
+						success: function (data) {
+							console.log(data)
+						}
+					})
 				})
+
+			})
+			$(function () {
+				$("#autofocus").on('click', function (e) {
+
+					$.ajax({
+						url: '/gradient',
+						method: 'POST',
+						data: {
+						},
+						success: function (data) {
+							console.log(data)
+						}
+					})
+				})
+
 			})
 
-		})
-		$(function(){
-			$("#set_Z").on('click', function(e){
-				internal_state["move_axis"] = "z"
-				$.ajax({
-					url: '/set_axis',
-					method:'POST',
-					data:{
-						'move_unit': internal_state['move_unit'],
-						'move_axis': internal_state['move_axis'],
-						'move_direction': internal_state['move_direction'],
-					},
-					success:function(data){
-						console.log(data)
-					}
+			$(function () {
+				$("#move_1").on('click', function (e) {
+					$.ajax({
+						url: '/move_by',
+						method: 'POST',
+						data: {
+							'move_by': 1
+						},
+						success: function (data) {
+							console.log(data)
+						}
+					})
 				})
+
 			})
 
-		})
-
-		$(function(){
-			$("#flip_direction").on('click', function(e){
-				if(internal_state["move_direction"] == "+"){
-					internal_state["move_direction"] = "-"
-				}
-				else{
-					internal_state["move_direction"] = "+"	
-				}
-
-				$.ajax({
-					url: '/set_direction',
-					method:'POST',
-					data:{
-						'move_unit': internal_state['move_unit'],
-						'move_axis': internal_state['move_axis'],
-						'move_direction': internal_state['move_direction'],
-					},
-					success:function(data){
-						console.log(data)
-					}
+			$(function () {
+				$("#move_2").on('click', function (e) {
+					$.ajax({
+						url: '/move_by',
+						method: 'POST',
+						data: {
+							'move_by': 2
+						},
+						success: function (data) {
+							console.log(data)
+						}
+					})
 				})
+
 			})
 
-		})
-		$(function(){
-			$("#autofocus").on('click', function(e){
-
-				$.ajax({
-					url: '/gradient',
-					method:'POST',
-					data:{
-					},
-					success:function(data){
-						console.log(data)
-					}
+			$(function () {
+				$("#move_5").on('click', function (e) {
+					$.ajax({
+						url: '/move_by',
+						method: 'POST',
+						data: {
+							'move_by': 5
+						},
+						success: function (data) {
+							console.log(data)
+						}
+					})
 				})
+
 			})
+		});
 
-		})
 
-		$(function(){
-			$("#move_1").on('click', function(e){
-				$.ajax({
-					url: '/move_by',
-					method:'POST',
-					data:{
-						'move_by': 1
-					},
-					success:function(data){
-						console.log(data)
-					}
-				})
-			})
-
-		})
-
-		$(function(){
-			$("#move_2").on('click', function(e){
-				$.ajax({
-					url: '/move_by',
-					method:'POST',
-					data:{
-						'move_by': 2
-					},
-					success:function(data){
-						console.log(data)
-					}
-				})
-			})
-
-		})
-
-		$(function(){
-			$("#move_5").on('click', function(e){
-				$.ajax({
-					url: '/move_by',
-					method:'POST',
-					data:{
-						'move_by': 5
-					},
-					success:function(data){
-						console.log(data)
-					}
-				})
-			})
-
-		})
 
 
 	</script>
@@ -399,7 +405,7 @@
 		z:
 		<input class = "block text-gray-700 text-sm font-bold mb-2" type="text" id="set_z_pos" name="set_z_pos" value = ""><br />
 
-		<button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" id = "pls_move" onclick='console.log("yes")'>Move to position!</button>
+		<button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" id = "pls_move">Move to position!</button>
 	</form>
 	<br />
 

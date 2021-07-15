@@ -405,7 +405,7 @@ def autofocus():
 	#
 	
 
-	scan_distance = 2
+	scan_distance = 3
 	scan_step = 0.1
 
 	# steps per mm
@@ -423,7 +423,7 @@ def autofocus():
 	# threshold
 	# 
 	
-	THRESHOLD = 10
+	THRESHOLD = 5
 	
 	values = []
 
@@ -432,10 +432,12 @@ def autofocus():
 	for i in range(N_STEP):
 		controller.simple_move(axis = "z", distance = scan_step)
 		fp = controller.acquire()
-		time.sleep(0.1)
+		time.sleep(0.5)
 
 		_focus = getfocus(fp)
 		values.append(_focus)
+
+		print(i, focus)
 
 		if _focus > THRESHOLD:
 			break
@@ -443,36 +445,17 @@ def autofocus():
 	print("distance", i * scan_step, "index", i)
 
 	max_index = values.index(max(values))
-	first_max = max(values)
-
-	print("max_index", max_index)
-
-	# move back
-	time.sleep(1)
 
 	controller.simple_move(axis = "z", distance = scan_distance * -1)
 
 	time.sleep(1)
 
-	small_scan_step = 0.01
+	controller.simple_move(axis = "z", distance = max_index * scan_step)
 
-	values = []
-	
-	controller.simple_move(axis = "z", distance = max_index * scan_step - 10*small_scan_step)
 
-	for i in range(20):
-		controller.simple_move(axis = "z", distance = small_scan_step)
-		fp = controller.acquire()
-		time.sleep(0.1)
+	print("max_index", max_index)
 
-		_focus = getfocus(fp)
-		values.append(_focus)
 
-		if _focus > first_max:
-			values.append(_focus)
-		print(_focus)
-
-	print(values)
 
 
 	data = {"focal_distance": controller.pos["z"]}

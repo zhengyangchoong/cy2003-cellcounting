@@ -529,6 +529,8 @@ def gradient_descent():
 
 			best_score = max(Y)
 
+			starting = False
+
 		else:
 			dx = update_grad(X[-2], X[-1], Y[-2], Y[-1])	
 

@@ -487,7 +487,7 @@ def gradient_descent():
 		try:
 			g = (y2-y1)/(x2-x1)	
 		except:
-			return 0
+			return 0.01
 		if g >= 0:
 			return np.exp(-np.abs(g))
 		else:
@@ -544,7 +544,7 @@ def gradient_descent():
 			X.append((X[-1] + dx))
 			Y.append(getfocus(controller.acquire()))
 
-		print("position: ", X[-1], "best score: ", best_score)
+		print("position: ", X[-1], "best score: ", max(Y), "best score position", X[Y.index(max(Y))])
 		if Y[-1] >= best_score:
 			best_score = max(Y)
 			counter = 0

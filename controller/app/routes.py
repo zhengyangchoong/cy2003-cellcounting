@@ -429,6 +429,8 @@ def autofocus():
 
 	start_z = controller.pos["z"]
 
+	print("START_Z", start_z)
+
 	N_STEP = int(scan_distance / scan_step)
 	for i in range(N_STEP):
 		controller.simple_move(axis = "z", distance = scan_step)
@@ -453,6 +455,7 @@ def autofocus():
 
 	time.sleep(1)
 
+	print((max_index + 1)* scan_step)
 	controller.simple_move(axis = "z", distance = (max_index + 1)* scan_step)
 
 

@@ -38,11 +38,26 @@
 		$(document).ready(function () {
 
 			$("#pls_move").click(function (e) {
-				console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
 				console.log(
-					$("#set_x_pos").attr("value"),
-					$("#set_y_pos").attr("value"),
-					$("#set_z_pos").attr("value"))
+					$("#set_x_pos").val(),
+					$("#set_y_pos").val(),
+					$("#set_z_pos").val())
+
+				$.ajax({
+					url: '/move_abs',
+					method: 'POST',
+					data: {
+						"x": $("#set_x_pos").val(),
+						"y": $("#set_y_pos").val(),
+						"z": $("#set_z_pos").val(),
+					},
+					success: function (data) {
+						console.log("ASFSFDFDS")
+						$("#x_pos").html(data['pos'][0])
+						$("#y_pos").html(data['pos'][1])
+						$("#z_pos").html(data['pos'][2])
+					}
+				})
 			})
 
 

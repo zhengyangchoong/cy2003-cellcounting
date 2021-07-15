@@ -309,23 +309,19 @@ def shutdown():
 @app.route('/move_abs', methods = ['POST',])
 def move_abs():
 
-	controller.move(request.form['set_x_pos'], request.form['set_y_pos'], request.form['set_z_pos'])
+	controller.move(
+		request.values.get("x"),
+		request.values.get("y"),
+		request.values.get("z"),
+	)
+	#controller.move(request.form['set_x_pos'], request.form['set_y_pos'], request.form['set_z_pos'])
 	time.sleep(5)
 
-	print(request.form['set_x_pos'])
-	print(request.form['set_y_pos'])
-	print(request.form['set_z_pos'])
 
-	##
-	## 
-	## update intetn
-	##
-
-
-	data = {"pos": [0,0,0]}
+	data = {"pos": [controller.pos["x"],controller.pos["y"],controller.pos["z"]]}
 	data = jsonify(data)
 
-	return render_template('index.html', data = data)
+	return data
 
 
 @app.route('/move_home', methods = ['GET', 'POST'])

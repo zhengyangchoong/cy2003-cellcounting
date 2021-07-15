@@ -35,11 +35,12 @@
 	</style>
 
 	<script>
-		$(function postCoords(){
+
+		$("#pls_move").click(function(){
 			console.log(
-			$("#set_x_pos").attr("value"),
-			$("#set_y_pos").attr("value"),
-			$("#set_z_pos").attr("value"))
+				$("#set_x_pos").attr("value"),
+				$("#set_y_pos").attr("value"),
+				$("#set_z_pos").attr("value"))
 		})
 
 		internal_state = {
@@ -397,7 +398,7 @@
 		z:
 		<input class = "block text-gray-700 text-sm font-bold mb-2" type="text" id="set_z_pos" name="set_z_pos" value = ""><br />
 
-		<button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onclick = "postCoords()">Move to position!</button>
+		<button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" id = "pls_move">Move to position!</button>
 	</form>
 	<br />
 

@@ -160,7 +160,7 @@ class MicroscopeController():
 		self.simple_move(axis = self.internal_state["move_axis"], distance = distance)
 
 
-	def move(self, abs_x = 0, abs_y = 0, abs_z = 0):
+	def move(self, abs_x = "", abs_y = "", abs_z = ""):
 
 		print(abs_x, abs_y, abs_z)
 		try:
@@ -168,28 +168,29 @@ class MicroscopeController():
 			move_str = ""
 
 			if abs_x == "":
-				abs_x = 0
-			if abs_y == "":
-				abs_y = 0
-			if abs_z == "":
-				abs_z = 0
-			
-			abs_x = float(abs_x)
-			abs_y = float(abs_y)
-			abs_z = float(abs_z)
-
-			if abs_x:
+				pass
+			else:
+				abs_x = float(abs_x)
 				if 0 <= abs_x <= 150: # hard coded limits
 					move_str += "X{:.2f} ".format(abs_x)
 					self.pos["x"] = abs_x
-			if abs_y:
+
+			if abs_y == "":
+				pass
+			else:
+				abs_y = float(abs_y)
 				if 0 <= abs_y <= 180: # hard coded limits
 					move_str += "Y{:.2f} ".format(abs_y)
 					self.pos["y"] = abs_y
-			if abs_z:
+
+			if abs_z == "":
+				pass
+			else:
+				abs_z = float(abs_z)
 				if 0 <= abs_z <= 85: # hard coded limits
+					
 					move_str += "Z{:.2f} ".format(abs_z)
-					self.pos["z"] = abs_z
+					self.pos["z"] = abs_z		
 
 			if not move_str == "":
 				print("Moving with str G0 ", move_str)
@@ -450,6 +451,8 @@ def autofocus():
 	print(max(values))
 
 	max_index = values.index(max(values))
+
+	time.sleep(0.5)
 
 	controller.move(abs_x="", abs_y="", abs_z = start_z)
 

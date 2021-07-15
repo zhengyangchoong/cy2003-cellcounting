@@ -530,7 +530,9 @@ def gradient_descent():
 			best_score = max(Y)
 
 		else:
-			dx = update_grad(X[-2], X[-1], Y[-2], Y[-1])			
+			dx = update_grad(X[-2], X[-1], Y[-2], Y[-1])	
+
+			print("DELTA X: ", dx)		
 			controller.simple_move(axis = "z", distance = dx)
 			X.append((X[-1] + dx))
 			Y.append(getfocus(controller.acquire()))
@@ -548,7 +550,7 @@ def gradient_descent():
 	best_location = X[Y.index(max(Y))]	
 	controller.move(abs_z = best_location, abs_x = "", abs_y = "")
 
-	data = {"Y": best_focus, "X": best_location}
+	data = {"Y": str(best_focus), "X": str(best_location)}
 	print(data)
 	data = jsonify(data)
 

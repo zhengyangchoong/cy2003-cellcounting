@@ -172,7 +172,7 @@ class MicroscopeController():
 			else:
 				abs_x = float(abs_x)
 				if 0 <= abs_x <= 150: # hard coded limits
-					move_str += "X{:.2f} ".format(abs_x)
+					move_str += "X{:.3f} ".format(abs_x)
 					self.pos["x"] = abs_x
 
 			if abs_y == "":
@@ -180,7 +180,7 @@ class MicroscopeController():
 			else:
 				abs_y = float(abs_y)
 				if 0 <= abs_y <= 180: # hard coded limits
-					move_str += "Y{:.2f} ".format(abs_y)
+					move_str += "Y{:.3f} ".format(abs_y)
 					self.pos["y"] = abs_y
 
 			if abs_z == "":
@@ -189,7 +189,7 @@ class MicroscopeController():
 				abs_z = float(abs_z)
 				if 0 <= abs_z <= 85: # hard coded limits
 					
-					move_str += "Z{:.2f} ".format(abs_z)
+					move_str += "Z{:.3f} ".format(abs_z)
 					self.pos["z"] = abs_z		
 
 			if not move_str == "":

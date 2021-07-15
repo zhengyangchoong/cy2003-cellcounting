@@ -35,6 +35,12 @@
 	</style>
 
 	<script>
+		$(function postCoords(){
+			console.log(
+			$("#set_x_pos").attr(value),
+			$("#set_y_pos").attr(value),
+			$("#set_z_pos").attr(value))
+		})
 
 		internal_state = {
 			"move_unit": "0.1",
@@ -261,7 +267,7 @@
 			$("#autofocus").on('click', function(e){
 
 				$.ajax({
-					url: '/autofocus',
+					url: '/gradient',
 					method:'POST',
 					data:{
 					},
@@ -383,7 +389,7 @@
 	<br />
 	<hr />
 
-	<form action = "{{ url_for('move_abs') }}" method = "post">
+	<form>
 		x: 
 		<input type="text" id="set_x_pos" name="set_x_pos"><br />
 		y:
@@ -391,7 +397,7 @@
 		z:
 		<input type="text" id="set_z_pos" name="set_z_pos"><br />
 
-		<input type="submit" value = "Move to position!" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+		<input type="submit" value = "Move to position!" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onclick = "postCoords()">
 	</form>
 	<br />
 

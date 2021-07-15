@@ -437,7 +437,7 @@ def autofocus():
 		_focus = getfocus(fp)
 		values.append(_focus)
 
-		print(i, focus)
+		print(i, _focus)
 
 		if _focus > THRESHOLD:
 			break

@@ -407,7 +407,7 @@ def autofocus():
 	
 
 	scan_distance = 3
-	scan_step = 0.1
+	scan_step = 0.025
 
 	# steps per mm
 
@@ -436,15 +436,13 @@ def autofocus():
 	for i in range(N_STEP):
 		controller.simple_move(axis = "z", distance = scan_step)
 		fp = controller.acquire()
-		time.sleep(0.5)
+		time.sleep(0.1)
 
 		_focus = getfocus(fp)
 		values.append(_focus)
 
 		print(i, _focus)
 
-		if _focus > THRESHOLD:
-			break
 
 	print("distance", i * scan_step, "index", i)
 
@@ -456,7 +454,7 @@ def autofocus():
 
 	controller.move(abs_x="", abs_y="", abs_z = start_z)
 
-	time.sleep(1)
+	time.sleep(0.5)
 
 	print((max_index + 1)* scan_step)
 	controller.simple_move(axis = "z", distance = (max_index + 1)* scan_step)

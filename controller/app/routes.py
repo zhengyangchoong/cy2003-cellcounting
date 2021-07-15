@@ -484,7 +484,10 @@ def autofocus():
 def gradient_descent():
 
 	def update_grad(x1, x2, y1, y2):
-		g = (y2-y1)/(x2-x1)	
+		try:
+			g = (y2-y1)/(x2-x1)	
+		except:
+			return 0
 		if g >= 0:
 			return np.exp(-np.abs(g))
 		else:
@@ -529,11 +532,13 @@ def gradient_descent():
 
 			best_score = max(Y)
 
+			
+
 			starting = False
 
 		else:
 			dx = update_grad(X[-2], X[-1], Y[-2], Y[-1])	
-
+			print(X,Y)
 			print("DELTA X: ", dx)		
 			controller.simple_move(axis = "z", distance = dx)
 			X.append((X[-1] + dx))

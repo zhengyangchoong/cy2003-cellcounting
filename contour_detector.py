@@ -21,6 +21,10 @@ def drawBasicGrid(img, pxstep, colour):
     while y < img.shape[0]:
         cv2.line(img, (0, y), (img.shape[1], y), color=colour,thickness=5)
         y += pxstep 
+    cv2.line(img, (0,img.shape[0]), (img.shape[1],img.shape[0]), color = colour, thickness = 5) # bottom 
+    cv2.line(img, (img.shape[1],img.shape[0]), (img.shape[1],0), color = colour, thickness = 5) # right
+    cv2.line(img, (0,img.shape[0]), (0,0), color = colour, thickness = 5) # left
+    cv2.line(img, (0,0), (img.shape[1],0), color = colour, thickness = 5) # top
 
 
 def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
@@ -63,7 +67,6 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
           white_dots.append(c)
 
   drawBasicGrid(image, 148, (52, 52, 52)) # draw vertical and horizontal lines
-  image = cv2.copyMakeBorder(image, 7, 5, 7, 5, cv2.BORDER_CONSTANT, value=(52, 52, 52)) # draw border lines
 
   output_path = "app/static/capture/{}.jpg".format(datetime.datetime.now(), "%Y%m%d-%H%M%S")
 

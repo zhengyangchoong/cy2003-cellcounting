@@ -47,7 +47,8 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
   kernel = np.ones((2,2),np.uint8)
   sure_bg = cv2.erode(image,kernel,iterations = 1) # apply erosion filter
 
-  sure_bg = cv2.copyMakeBorder(sure_bg, 0, 5, 0, 5, cv2.BORDER_CONSTANT, value=(52, 52, 52)) # add bottom and right outermost gridline to ignore cells on these lines
+  cv2.line(sure_bg, (0,sure_bg.shape[0]), (sure_bg.shape[1],sure_bg.shape[0]), color = (52,52,52), thickness = 5) 
+  cv2.line(sure_bg, (sure_bg.shape[1],sure_bg.shape[0]), (sure_bg.shape[1],0), color = (52,52,52), thickness = 5) # add bottom and right outermost gridline to ignore cells on these lines
 
   gray = cv2.cvtColor(sure_bg, cv2.COLOR_BGR2GRAY) # convert to grayscale for Otsu's thresholding
   ret, thresh = cv2.threshold(

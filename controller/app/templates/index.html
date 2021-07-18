@@ -204,6 +204,26 @@
 				})
 
 			})
+
+
+			$(function () {
+				$("#set_4").on('click', function (e) {
+					internal_state["move_unit"] = "0.01"
+					$.ajax({
+						url: '/set_units',
+						method: 'POST',
+						data: {
+							'move_unit': internal_state['move_unit'],
+							'move_axis': internal_state['move_axis'],
+							'move_direction': internal_state['move_direction'],
+						},
+						success: function (data) {
+							console.log(data)
+						}
+					})
+				})
+
+			})
 			$(function () {
 				$("#set_X").on('click', function (e) {
 					internal_state["move_axis"] = "x"
@@ -376,7 +396,9 @@
 	<button type = "button" id = "autofocus" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Attempt to autofocus</button>
 	<br/>
 
-
+	<button type="button" id="set_4"
+		class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Set
+		0.01mm</button>
 	<button type = "button" id = "set_1" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Set 0.1mm</button>
 	<button type = "button" id = "set_2" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Set 1.0mm</button>
 	<button type = "button" id = "set_3" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Set 10mm</button>
@@ -411,16 +433,19 @@
 	z: <span id = "z_pos"> </span>
 	<br />
 	<hr />
-
-	
+	<div class = "mb-4">
 		x: 
-		<input class = "block text-gray-700 text-sm font-bold mb-2" type="text" id="set_x_pos" name="set_x_pos" value = ""><br />
+		<input class = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none
+	focus:shadow-outline" type="text" id="set_x_pos" name="set_x_pos" value = ""><br />
 		y:
-		<input class = "block text-gray-700 text-sm font-bold mb-2" type="text" id="set_y_pos" name="set_y_pos" value = ""><br />
+		<input class = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none
+	focus:shadow-outline" type="text" id="set_y_pos" name="set_y_pos" value = ""><br />
 		z:
-		<input class = "block text-gray-700 text-sm font-bold mb-2" type="text" id="set_z_pos" name="set_z_pos" value = ""><br />
+		<input class = "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none
+	focus:shadow-outline" type="text" id="set_z_pos" name="set_z_pos" value = ""><br />
 
 		<button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" id = "pls_move">Move to position!</button>
+	</div>
 	</form>
 	<br />
 

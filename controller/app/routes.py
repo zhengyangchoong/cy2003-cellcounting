@@ -5,7 +5,10 @@ try:
 	from app.printrun.printcore import printcore
 	
 except:
-	from printrun.printcore import printcore
+	try:
+		from printrun.printcore import printcore
+	except:
+		pass
 	pass
 
 import datetime
@@ -80,7 +83,7 @@ class MicroscopeController():
 
 		file_id = datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d_%H%M%S")
 
-		_filename = os.path.join(DEFAULT_FOLDER, file_id + ".jpg")
+		_filename = os.path.join(DEFAULT_FOLDER, "{}_X{}Y{}Z{}.jpg".format(file_id, self.pos["x"], self.pos["y"], self.pos["z"]))
 
 
 		self.cap = cv2.VideoCapture(0)
@@ -172,7 +175,7 @@ class MicroscopeController():
 			else:
 				abs_x = float(abs_x)
 				if 0 <= abs_x <= 150: # hard coded limits
-					move_str += "X{:.3f} ".format(abs_x)
+					move_str += "X{:.4f} ".format(abs_x)
 					self.pos["x"] = abs_x
 
 			if abs_y == "":
@@ -180,7 +183,7 @@ class MicroscopeController():
 			else:
 				abs_y = float(abs_y)
 				if 0 <= abs_y <= 180: # hard coded limits
-					move_str += "Y{:.3f} ".format(abs_y)
+					move_str += "Y{:.4f} ".format(abs_y)
 					self.pos["y"] = abs_y
 
 			if abs_z == "":
@@ -189,7 +192,7 @@ class MicroscopeController():
 				abs_z = float(abs_z)
 				if 0 <= abs_z <= 85: # hard coded limits
 					
-					move_str += "Z{:.3f} ".format(abs_z)
+					move_str += "Z{:.4f} ".format(abs_z)
 					self.pos["z"] = abs_z		
 
 			if not move_str == "":
@@ -254,7 +257,7 @@ from flask import json, jsonify, render_template, request, send_file, make_respo
 def index():
 
 	global controller
-	controller = MicroscopeController(offline = False)
+	controller = MicroscopeController(offline = True)
 	controller.home()
 
 	return render_template('index.html')
@@ -406,8 +409,8 @@ def autofocus():
 	#
 	
 
-	scan_distance = 3
-	scan_step = 0.025
+	scan_distance = 2
+	scan_step = 0.02
 
 	# steps per mm
 
@@ -554,6 +557,20 @@ def gradient_descent():
 	return data
 
 	
+@app.route("/check_repeat", methods = ["POST"])
+def check_repeat():
+	# basically move 1mm and back, take image, repeat for a few times
+	pass
+
+	for i in range(25):
+
+		controller.simple_move(axis = "x", distance = 1)
+		controller.acquire()
+		time.sleep(1)
+		controller.simple_move(axis = "x", distance = -1)
+
+
+
 
 
 		

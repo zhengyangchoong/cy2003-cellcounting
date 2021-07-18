@@ -31,6 +31,14 @@ def drawBottomRightLines(img):
     cv2.line(img, (0,img.shape[0]), (img.shape[1],img.shape[0]), color = (52,52,52), thickness = 5) 
     cv2.line(img, (img.shape[1],img.shape[0]), (img.shape[1],0), color = (52,52,52), thickness = 5)
  
+def thresholdingPreprocessing(img):
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) # convert to grayscale for Otsu's thresholding
+    ret, thresh = cv2.threshold(
+      gray, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU) # apply otsu threshold
+    kernel = np.ones((1,1),np.uint8)
+    thresh = cv2.erode(thresh,kernel,iterations = 1) # apply erosion again to smooth cells so the cell wall is smooth
+    return thresh
+
 
 def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
   """
@@ -54,11 +62,7 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
   
   drawBottomRightLines(sure_bg)
 
-  gray = cv2.cvtColor(sure_bg, cv2.COLOR_BGR2GRAY) # convert to grayscale for Otsu's thresholding
-  ret, thresh = cv2.threshold(
-      gray, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU) # apply otsu threshold
-  kernel2 = np.ones((1,1),np.uint8)
-  thresh = cv2.erode(thresh,kernel,iterations = 1) # apply erosion again to smooth cells so the cell wall is smooth
+  thresh = thresholdingPreprocessing(sure_bg)
 
   cnts, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
   cnts = [cnts[i] for i in range(len(cnts)) if hierarchy[0][i][2] == -1] # count contours with no child contours only

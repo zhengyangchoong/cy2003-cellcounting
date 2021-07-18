@@ -74,7 +74,7 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
   exclude_large_cells = image.copy()
   for c in cnts:
     area = cv2.contourArea(c)
-    if 1500 > area > 50:
+    if 1500 > area > 90:
         cv2.drawContours(exclude_large_cells, [c], -1, (110, 110, 110), cv2.FILLED) # isolate small cells by removing large cells
         cv2.drawContours(exclude_large_cells, [c], -1, (110,110,110), 6) # draw border
   
@@ -95,7 +95,7 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
 
   for c in cnts:
       area = cv2.contourArea(c)
-      if max_area_cells > area > 50 :
+      if max_area_cells > area > 90 :
           cv2.drawContours(image, [c], -1, (36, 255, 12), 2)
           white_dots.append(c)
 

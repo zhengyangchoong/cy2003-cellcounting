@@ -26,6 +26,11 @@ def drawBasicGrid(img, pxstep, colour):
     cv2.line(img, (0,img.shape[0]), (0,0), color = colour, thickness = 5) # left
     cv2.line(img, (0,0), (img.shape[1],0), color = colour, thickness = 5) # top
 
+def drawBottomRightLines(img):
+    # add bottom and right outermost gridline to ignore cells on these lines
+    cv2.line(img, (0,img.shape[0]), (img.shape[1],img.shape[0]), color = (52,52,52), thickness = 5) 
+    cv2.line(img, (img.shape[1],img.shape[0]), (img.shape[1],0), color = (52,52,52), thickness = 5)
+ 
 
 def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
   """
@@ -46,9 +51,8 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
   image = image[y:y+mm_distance, x:x+mm_distance] # use numpy slicing to execute the crop
   kernel = np.ones((2,2),np.uint8)
   sure_bg = cv2.erode(image,kernel,iterations = 1) # apply erosion filter
-
-  cv2.line(sure_bg, (0,sure_bg.shape[0]), (sure_bg.shape[1],sure_bg.shape[0]), color = (52,52,52), thickness = 5) 
-  cv2.line(sure_bg, (sure_bg.shape[1],sure_bg.shape[0]), (sure_bg.shape[1],0), color = (52,52,52), thickness = 5) # add bottom and right outermost gridline to ignore cells on these lines
+  
+  drawBottomRightLines(sure_bg)
 
   gray = cv2.cvtColor(sure_bg, cv2.COLOR_BGR2GRAY) # convert to grayscale for Otsu's thresholding
   ret, thresh = cv2.threshold(
@@ -60,6 +64,8 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
   cnts = [cnts[i] for i in range(len(cnts)) if hierarchy[0][i][2] == -1] # count contours with no child contours only
 
   white_dots = [] # used contours as blob detection is more suited for detecting black or grey blobs
+
+  ############### Contour Detection for Large Cells ###############
 
   for c in cnts:
       area = cv2.contourArea(c)

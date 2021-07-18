@@ -162,7 +162,7 @@ def unsharp_mask(image, kernel_size=(3, 3), sigma=1.0, amount=0.5, threshold=0):
 		np.copyto(sharpened, image, where=low_contrast_mask)
 	return sharpened
 
-def test_1(image_path, mm_distance = 592, max_area_cells = 1500, debug = False, static = 0):
+def zy_contour(image_path, mm_distance = 592, max_area_cells = 1500, debug = False, static = 0):
 	"""
 	preprocesses image, performs Otsu's thresholding and connected components detection to derive cell count by hemocytometer method
 	excludes cells on outermost bottom and right grid lines

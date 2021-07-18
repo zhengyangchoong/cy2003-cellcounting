@@ -95,7 +95,7 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
 
   for c in cnts:
       area = cv2.contourArea(c)
-      if max_area_cells > area :
+      if max_area_cells > area > 50 :
           cv2.drawContours(image, [c], -1, (36, 255, 12), 2)
           white_dots.append(c)
 

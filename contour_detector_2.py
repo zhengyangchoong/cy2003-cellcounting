@@ -43,7 +43,7 @@ def unsharp_mask(image, kernel_size=(3, 3), sigma=1.0, amount=0.5, threshold=0):
 		np.copyto(sharpened, image, where=low_contrast_mask)
 	return sharpened
 
-def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
+def contourdetector(image_path, mm_distance = 592, max_area_cells = 800):
   """
   preprocesses image, performs adaptive Gaussian thresholding and connected components detection to derive cell count by hemocytometer method
   excludes cells on outermost bottom and right grid lines
@@ -78,7 +78,7 @@ def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
 
   for c in cnts:
       area = cv2.contourArea(c)
-      if 300 > area > 0:
+      if max_area_cells > area > 0:
           cv2.drawContours(image, [c], -1, (255, 255, 12), 2)
           white_dots.append(c)
 

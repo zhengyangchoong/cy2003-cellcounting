@@ -45,7 +45,7 @@ def unsharp_mask(image, kernel_size=(3, 3), sigma=1.0, amount=0.5, threshold=0):
 
 def contourdetector(image_path, mm_distance = 592, max_area_cells = 1500):
   """
-  preprocesses image, performs Otsu's thresholding and connected components detection to derive cell count by hemocytometer method
+  preprocesses image, performs adaptive Gaussian thresholding and connected components detection to derive cell count by hemocytometer method
   excludes cells on outermost bottom and right grid lines
   :param      image_path:  The image file path to jpg
   :param      mm_distance: number of pixels per mm

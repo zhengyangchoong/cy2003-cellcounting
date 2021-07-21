@@ -127,7 +127,7 @@ class MicroscopeController():
 		return _filename
 
 	def count_cells(self,fp):
-		count, img = contour_detector.contourdetector(fp)
+		count, img = contour_detector.v2_contourdetector(fp)
 
 		return (count, img)
 

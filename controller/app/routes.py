@@ -403,6 +403,79 @@ def getfocus(fp):
 	return (cv2.Laplacian(img, cv2.CV_32F).var())
 
 
+@app.route('/autofocus_2', methods = ['POST'])
+def autofocus_2():
+
+	#scan_distance = float(request.values.get('scan_distance')) # total distane to travel
+	#scan_direction = request.values.get('scan_direction')
+	#scan_step = float(request.values.get('scan_step')) # step size
+	#
+	
+
+	scan_distance = 0.2
+	scan_step = 0.002
+
+	# steps per mm
+
+
+	# scan direction
+	# scan step
+	# scan distance
+	# input from ^
+	# 
+	# 
+	# 
+	# acquire
+	# 
+	# threshold
+	# 
+	
+	THRESHOLD = 10
+	True
+	values = []
+
+	start_z = controller.pos["z"]
+
+	print("START_Z", start_z)
+
+	N_STEP = int(scan_distance / scan_step)
+	for i in range(N_STEP):
+		controller.simple_move(axis = "z", distance = scan_step)
+		fp = controller.acquire()
+		time.sleep(0.1)
+
+		_focus = getfocus(fp)
+		values.append(_focus)
+
+		print(i, _focus)
+
+
+	print("distance", i * scan_step, "index", i)
+
+	print(max(values))
+
+	max_index = values.index(max(values))
+
+	time.sleep(0.5)
+
+	controller.move(abs_x="", abs_y="", abs_z = start_z)
+
+	time.sleep(0.5)
+
+	print((max_index + 1)* scan_step)
+	controller.simple_move(axis = "z", distance = (max_index + 1)* scan_step)
+
+
+	print("max_index", max_index)
+
+
+
+
+	data = {"focal_distance": controller.pos["z"]}
+	data = jsonify(data)
+	return data
+
+
 @app.route('/autofocus', methods = ['POST'])
 def autofocus():
 

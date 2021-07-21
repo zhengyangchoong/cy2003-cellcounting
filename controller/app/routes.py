@@ -257,7 +257,7 @@ from flask import json, jsonify, render_template, request, send_file, make_respo
 def index():
 
 	global controller
-	controller = MicroscopeController(offline = True)
+	controller = MicroscopeController(offline = False)
 	controller.home()
 
 	return render_template('index.html')
@@ -396,6 +396,8 @@ def getfocus(fp):
 	dy = 900
 
 	img = img[centre_y - dy//2: centre_y + dy//2, centre_x - dx//2: centre_x + dx//2]
+
+	img = cv2.GaussianBlur(img,(5,5),cv2.BORDER_DEFAULT)
 
 	return (cv2.Laplacian(img, cv2.CV_32F).var())
 

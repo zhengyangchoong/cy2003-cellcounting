@@ -250,3 +250,51 @@ def zy_contour(image_path, mm_distance = 592, max_area_cells = 1500, debug = Fal
 		plt.show()
 
 	return len(white_dots), image # returns cell count and image with drawn contours
+
+def v2_contourdetector(image_path, mm_distance = 592, max_area_cells = 800):
+  """
+  preprocesses image, performs adaptive Gaussian thresholding and connected components detection to derive cell count by hemocytometer method
+  excludes cells on outermost bottom and right grid lines
+  :param      image_path:  The image file path to jpg
+  :param      mm_distance: number of pixels per mm
+  :param      max_area_cells: maximum enclosed area that contour detector will accept for it to count as a cell
+  returns an integer as the cell count of the image and gridded image with detected contours
+  """
+  image = cv2.imread(image_path)
+  image = unsharp_mask(image)
+  image = cv2.bitwise_not(image) 
+
+  y=200
+  x=500
+
+  image = image[y:y+mm_distance, x:x+mm_distance] # use numpy slicing to execute the crop
+  kernel = np.ones((2,2),np.uint8)
+  sure_bg = cv2.erode(image,kernel,iterations = 1) # apply erosion filter
+
+  drawBottomRightLines(sure_bg)
+
+  gray = cv2.cvtColor(sure_bg, cv2.COLOR_BGR2GRAY) # convert to grayscale for thresholding
+  thresh = cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
+            cv2.THRESH_BINARY,11,2) # adaptive thresholding
+  kernel2 = np.ones((2,2),np.uint8)
+  thresh = cv2.dilate(thresh,kernel2,iterations = 1) # apply dilation to avoid disconnected contours
+
+  cnts, hierarchy = cv2.findContours(255-thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+  cnts = [cnts[i] for i in range(len(cnts)) if hierarchy[0][i][2] == -1] # count contours with no child contours only
+
+  white_dots = [] 
+
+  for c in cnts:
+      area = cv2.contourArea(c)
+      if max_area_cells > area > 0:
+          cv2.drawContours(image, [c], -1, (255, 255, 12), 2)
+          white_dots.append(c)
+
+
+  drawBasicGrid(image, 148, (52, 52, 52)) # draw vertical and horizontal lines
+
+  output_path = "app/static/capture/{}.jpg".format(datetime.datetime.now(), "%Y%m%d-%H%M%S")
+
+  cv2.imwrite(output_path,image)
+
+  return len(white_dots), output_path # returns cell count and image with drawn contours

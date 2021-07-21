@@ -645,10 +645,11 @@ def check_repeat():
 		time.sleep(1)
 		controller.simple_move(axis = "x", distance = -1)
 
+	data = {"Y": "hi"}
+	print(data)
+	data = jsonify(data)
 
-
-
-
+	return data
 		
 
 

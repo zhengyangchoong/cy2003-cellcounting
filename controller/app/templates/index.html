@@ -150,8 +150,24 @@
 			})
 
 			$(function () {
+				("#check_repeat").on('click', function (e) {
+					
+					$.ajax({
+						url: '/check_repeat',
+						method: 'POST',
+						data: {
+						
+						},
+						success: function (data) {
+						}
+					})
+				})
+
+			})
+
+			$(function () {
 				$("#set_1").on('click', function (e) {
-					internal_state["move_unit"] = "0.1"
+					internal_state["move_unit"] = "0.1";
 					$.ajax({
 						url: '/set_units',
 						method: 'POST',
@@ -411,6 +427,9 @@
 	<button type = "button" id = "autofocus" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Attempt to autofocus</button>
 	<button type="button" id="autofocus_2"
 		class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Autofocus 2</button>
+
+	<button type="button" id="check_repeat"
+		class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Check repeat</button>
 	<br/>
 
 	<button type="button" id="set_4"

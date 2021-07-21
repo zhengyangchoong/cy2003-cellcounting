@@ -363,7 +363,7 @@ def set_axis():
 
 @app.route('/set_direction', methods = ['POST'])
 def set_direction():
-	controller.internal_state["move_axis"] = request.values.get("move_direction")
+	controller.internal_state["move_direction"] = request.values.get("move_direction")
 
 	#print(controller.internal_state)
 	data = {"hi": "hi"}

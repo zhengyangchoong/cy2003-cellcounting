@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-
+import datetime
 
 def contourdetector(image_path, output_path, mm_distance = 592, max_area_cells = 1500, debug = False, image_data = None, static = 0):
 	"""

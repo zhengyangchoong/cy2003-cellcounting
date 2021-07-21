@@ -412,7 +412,7 @@ def autofocus():
 	
 
 	scan_distance = 2
-	scan_step = 0.02
+	scan_step = 0.01
 
 	# steps per mm
 
@@ -430,7 +430,7 @@ def autofocus():
 	# 
 	
 	THRESHOLD = 10
-	
+	True
 	values = []
 
 	start_z = controller.pos["z"]

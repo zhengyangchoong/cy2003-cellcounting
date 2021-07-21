@@ -398,7 +398,7 @@ def getfocus(fp):
 
 	img = img[centre_y - dy//2: centre_y + dy//2, centre_x - dx//2: centre_x + dx//2]
 
-	img = cv2.GaussianBlur(img,(5,5),cv2.BORDER_DEFAULT)
+	#img = cv2.GaussianBlur(img,(5,5),cv2.BORDER_DEFAULT)
 
 	return (cv2.Laplacian(img, cv2.CV_32F).var())
 
@@ -412,7 +412,7 @@ def autofocus():
 	#
 	
 
-	scan_distance = 2
+	scan_distance = 0.5
 	scan_step = 0.01
 
 	# steps per mm

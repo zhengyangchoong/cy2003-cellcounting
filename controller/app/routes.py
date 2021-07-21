@@ -154,11 +154,12 @@ class MicroscopeController():
 			distance *= 1
 		elif self.internal_state["move_units"] == "10":
 			distance *= 10
-
-		print("distance to move", distance)
-
+		elif self.internal_state["move_units"] == "0.01":
+			distance *= 0.01
 		if self.internal_state["move_direction"] == "-":
 			distance *= -1
+
+		print("distance to move", distance)
 
 		self.simple_move(axis = self.internal_state["move_axis"], distance = distance)
 

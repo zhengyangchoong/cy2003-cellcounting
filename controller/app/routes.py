@@ -413,7 +413,7 @@ def autofocus_2():
 	
 
 	scan_distance = 0.2
-	scan_step = 0.002
+	scan_step = 0.001
 
 	# steps per mm
 

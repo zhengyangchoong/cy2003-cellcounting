@@ -296,6 +296,6 @@ def v2_contourdetector(image_path, mm_distance = 592, max_area_cells = 800):
 
   output_path = "app/static/capture/{}.jpg".format(datetime.datetime.now(), "%Y%m%d-%H%M%S")
 
-  cv2.imwrite(output_path,thresh)
+  cv2.imwrite(output_path,image)
 
   return len(white_dots), output_path # returns cell count and image with drawn contours

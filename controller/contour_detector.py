@@ -231,7 +231,8 @@ def zy_contour(image_path, mm_distance = 592, max_area_cells = 1500, debug = Fal
 
 	drawBasicGrid(image, 148, (52, 52, 52)) # draw vertical and horizontal lines
 
-	#output_path = "app/static/capture/{}.jpg".format(datetime.datetime.now(), "%Y%m%d-%H%M%S")
+	output_path = "app/static/capture/{}.jpg".format(datetime.datetime.now(), "%Y%m%d-%H%M%S")
+	cv2.imwrite(output_path,image)
 
 	if debug:
 		f, axarr = plt.subplots(nrows=2,ncols=2)
@@ -249,7 +250,7 @@ def zy_contour(image_path, mm_distance = 592, max_area_cells = 1500, debug = Fal
 		fig.set_dpi(150)
 		plt.show()
 
-	return len(white_dots), image # returns cell count and image with drawn contours
+	return len(white_dots), output_path # returns cell count and image with drawn contours
 
 def v2_contourdetector(image_path, mm_distance = 592, max_area_cells = 800):
   """

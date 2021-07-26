@@ -286,7 +286,7 @@ def capture_and_count():
 
 	fp = controller.acquire()
 
-	count, fp = controller.count_cells(fp)
+	fp, count = controller.count_cells(fp)
 
 	fp = "/".join(fp.split("/")[1:])
 

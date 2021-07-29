@@ -272,7 +272,7 @@ def v2_contourdetector(image_path, mm_distance = 592, max_area_cells = 800):
   kernel = np.ones((2,2),np.uint8)
   sure_bg = cv2.erode(image,kernel,iterations = 1) # apply erosion filter
 
-  drawBottomRightLines(sure_bg)
+  #drawBottomRightLines(sure_bg)
 
   gray = cv2.cvtColor(sure_bg, cv2.COLOR_BGR2GRAY) # convert to grayscale for thresholding
   thresh = cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\

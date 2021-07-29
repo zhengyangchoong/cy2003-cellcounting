@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 
-def contourdetector(image_path, output_path, mm_distance = 592, max_area_cells = 1500, debug = False, image_data = None, static = 0):
+def contourdetector(image_path, output_path = "", mm_distance = 592, max_area_cells = 1500, debug = False, image_data = None, static = 0):
 	"""
 	preprocesses image, performs Otsu's thresholding and connected components detection to derive cell count by hemocytometer method
 	excludes cells on outermost bottom and right grid lines
@@ -74,11 +74,11 @@ def contourdetector(image_path, output_path, mm_distance = 592, max_area_cells =
 		fig = plt.gcf()       
 		fig.set_size_inches(8,6)
 		plt.show()
-	#output_path = "app/static/capture/{}.jpg".format(datetime.datetime.now(), "%Y%m%d-%H%M%S")
-	if output_path == "":
-		return len(white_dots), image
-	else:
-		cv2.imwrite(output_path, image)
+	output_path = "app/static/capture/{}.jpg".format(datetime.datetime.now(), "%Y%m%d-%H%M%S")
+	# if output_path == "":
+	# 	return len(white_dots), image
+	# else:
+	cv2.imwrite(output_path, image)
 	return len(white_dots), output_path # returns cell count and image with drawn contours
 
 

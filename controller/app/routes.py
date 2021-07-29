@@ -127,12 +127,17 @@ class MicroscopeController():
 		return _filename
 
 	def count_cells(self,fp):
-		cell_info = {}
-		cell_info[contour_detector.v2_contourdetector(fp)[1]] = contour_detector.v2_contourdetector(fp)[0]
-		cell_info[contour_detector.zy_contour(fp)[1]] = contour_detector.zy_contour(fp)[0]
-		cell_info[contour_detector.contourdetector(fp)[1]] = contour_detector.contourdetector(fp)[0]
 
-		return (max(cell_info.items(), key = lambda k : k[1])) # lambda returns key value pair with max cell count 
+
+		counts, fp, = contour_detector.v2_contourdetector(fp)
+
+		return (fp, counts)
+		# cell_info = {}
+		# cell_info[contour_detector.v2_contourdetector(fp)[1]] = contour_detector.v2_contourdetector(fp)[0]
+		# cell_info[contour_detector.zy_contour(fp)[1]] = contour_detector.zy_contour(fp)[0]
+		# cell_info[contour_detector.contourdetector(fp)[1]] = contour_detector.contourdetector(fp)[0]
+
+		#return (max(cell_info.items(), key = lambda k : k[1])) # lambda returns key value pair with max cell count 
 
 	def simple_move(self, axis = "x", distance = 0):
 

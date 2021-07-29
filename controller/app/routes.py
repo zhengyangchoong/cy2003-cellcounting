@@ -129,7 +129,7 @@ class MicroscopeController():
 	def count_cells(self,fp):
 
 
-		counts, fp, = contour_detector.v2_contourdetector(fp)
+		counts, fp, = contour_detector.zy_contour(fp)
 
 		return (fp, counts)
 		# cell_info = {}

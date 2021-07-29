@@ -187,7 +187,7 @@ def zy_contour(image_path, mm_distance = 592, max_area_cells = 1500, debug = Fal
 
 	############### Contour Detection for Large Cells ###############
 
-	drawBottomRightLines(sure_bg)
+	#drawBottomRightLines(sure_bg)
 
 	#thresh = thresholdingPreprocessing(sure_bg, otsu = False, static = 55)
 	thresh = lookup_curve(sure_bg, static)	
